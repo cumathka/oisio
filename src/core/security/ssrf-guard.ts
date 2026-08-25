@@ -9,14 +9,26 @@ export interface SSRFCheckResult {
 }
 
 /**
+ * Determines if a string is a valid IPv4 address.
+ */
+export function isIPv4Address(str: string): boolean {
+  const parts = str.split(".");
+  if (parts.length !== 4) return false;
+  return parts.every((p) => {
+    const num = Number(p);
+    return !isNaN(num) && num >= 0 && num <= 255 && String(num) === p;
+  });
+}
+
+/**
  * Checks if an IPv4 string belongs to private, loopback, link-local, carrier-grade NAT, or multicast ranges.
  */
 export function isPrivateOrReservedIPv4(ip: string): boolean {
-  const parts = ip.split(".").map(Number);
-  if (parts.length !== 4 || parts.some((p) => isNaN(p) || p < 0 || p > 255)) {
-    return true; // Malformed IPs are considered unsafe
+  if (!isIPv4Address(ip)) {
+    return false;
   }
 
+  const parts = ip.split(".").map(Number);
   const [a, b] = parts;
 
   // 0.0.0.0/8 (Current network)
