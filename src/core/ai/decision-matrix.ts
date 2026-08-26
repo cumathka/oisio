@@ -10,6 +10,7 @@ import { z } from "zod";
 export type Impact = z.infer<typeof ImpactLevelEnum>;
 export type Effort = z.infer<typeof EffortLevelEnum>;
 export type Priority = z.infer<typeof PriorityActionEnum>;
+export type DecisionCategory = 'DO_FIRST' | 'PLAN' | 'OPTIONAL' | 'IGNORE';
 
 /**
  * Deterministic AI Priority Matrix Evaluator

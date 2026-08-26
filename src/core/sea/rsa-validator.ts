@@ -1,5 +1,36 @@
 import { RSACheckResult, RSAPolicyViolation } from "@/types";
 
+export function validateRsaAsset(
+  text: string,
+  type: 'HEADLINE' | 'DESCRIPTION'
+): { characterCount: number; maxAllowed: number; valid: boolean; policyWarnings: string[] } {
+  const maxAllowed = type === 'HEADLINE' ? MAX_HEADLINE_LENGTH : MAX_DESCRIPTION_LENGTH;
+  const characterCount = getUnicodeLength(text);
+  const policyWarnings: string[] = [];
+
+  if (characterCount > maxAllowed) {
+    policyWarnings.push(`Exceeds limit by ${characterCount - maxAllowed} characters`);
+  }
+
+  const lower = text.toLowerCase();
+  for (const restricted of POLICY_RESTRICTED_WORDS) {
+    if (lower.includes(restricted)) {
+      policyWarnings.push(`Contains restricted term: "${restricted}"`);
+    }
+  }
+
+  if (/!{2,}/.test(text)) {
+    policyWarnings.push('Excessive exclamation marks not permitted');
+  }
+
+  return {
+    characterCount,
+    maxAllowed,
+    valid: characterCount <= maxAllowed && policyWarnings.length === 0,
+    policyWarnings,
+  };
+}
+
 export const MAX_HEADLINE_LENGTH = 30;
 export const MAX_DESCRIPTION_LENGTH = 90;
 export const MIN_HEADLINES_REQUIRED = 3;
