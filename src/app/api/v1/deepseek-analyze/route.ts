@@ -164,6 +164,7 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
   ],
   "titleAnalysis": { "length": <number>, "isOptimal": <boolean>, "score": <0-100>, "feedback": "short feedback" },
   "descriptionAnalysis": { "length": <number>, "isOptimal": <boolean>, "score": <0-100>, "feedback": "short feedback" },
+  "channelScores": { "technical": <0-100, technical SEO health>, "content": <0-100, content quality>, "onPage": <0-100, on-page optimization>, "ux": <0-100, UX and mobile signals> },
   "technicalSummary": "2-3 sentences about technical SEO state",
   "aiInsight": "1 key actionable insight with a specific, quantified opportunity"
 }`;

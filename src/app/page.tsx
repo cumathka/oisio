@@ -10,9 +10,11 @@ export default function AppEntry() {
     null,
   );
   const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   const handleAnalyzeStart = useCallback(async (url: string, lang: string) => {
     setAnalysisLoading(true);
+    setAnalysisError(null);
     setAppState("app");
 
     try {
@@ -21,14 +23,14 @@ export default function AppEntry() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, uiLang: lang }),
       });
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data.success && data.analysis) {
-          setAnalysisResult({ url, ...data.analysis, seoData: data.seoData });
-        }
+      const data = await resp.json();
+      if (resp.ok && data.success && data.analysis) {
+        setAnalysisResult({ url, ...data.analysis, seoData: data.seoData });
+      } else {
+        setAnalysisError(data.error ?? "Analysis failed — check console.");
       }
-    } catch {
-      // Dashboard shows demo data on API failure
+    } catch (e) {
+      setAnalysisError(e instanceof Error ? e.message : "Network error.");
     } finally {
       setAnalysisLoading(false);
     }
@@ -37,6 +39,7 @@ export default function AppEntry() {
   const handleBack = useCallback(() => {
     setAppState("landing");
     setAnalysisResult(null);
+    setAnalysisError(null);
   }, []);
 
   if (appState === "landing") {
@@ -47,6 +50,7 @@ export default function AppEntry() {
     <DashboardPageContent
       analysisResult={analysisResult}
       analysisLoading={analysisLoading}
+      analysisError={analysisError}
       onBack={handleBack}
     />
   );

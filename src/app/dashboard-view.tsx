@@ -86,6 +86,12 @@ export interface AnalysisResult {
     score: number;
     feedback: string;
   };
+  channelScores?: {
+    technical?: number;
+    content?: number;
+    onPage?: number;
+    ux?: number;
+  };
   technicalSummary?: string;
   aiInsight?: string;
   seoData?: {
@@ -499,50 +505,124 @@ function OverviewView({ ar }: { ar?: AnalysisResult | null }) {
     OPTIONAL: "indigo",
   };
 
+  // Channel bars: use real channelScores from DeepSeek when available
+  const channels = ar?.channelScores
+    ? [
+        { label: "Technical SEO", score: ar.channelScores.technical ?? 0, color: "#818cf8" },
+        { label: "Content Quality", score: ar.channelScores.content ?? 0, color: "#fbbf24" },
+        { label: "On-Page SEO", score: ar.channelScores.onPage ?? 0, color: "#34d399" },
+        { label: "UX & Mobile", score: ar.channelScores.ux ?? 0, color: "#f87171" },
+      ]
+    : [
+        { label: "Technical SEO", score: 88, color: "#818cf8" },
+        { label: "Google Ads", score: 94, color: "#34d399" },
+        { label: "Content", score: 62, color: "#fbbf24" },
+        { label: "Conversion", score: 58, color: "#f87171" },
+      ];
+
+  // Critical / warning / info issue counts from real analysis
+  const criticalCount = ar?.issues?.filter((i) => i.severity === "critical").length ?? 0;
+  const issueCount = ar?.issues?.length ?? 0;
+  const kwCount = ar?.keywords?.length ?? 0;
+
+  // Keyword intent distribution for the chart (replaces hardcoded weekly clicks when real data)
+  const intentCounts = ar?.keywords
+    ? (() => {
+        const counts: Record<string, number> = {};
+        for (const kw of ar.keywords) {
+          counts[kw.intent] = (counts[kw.intent] ?? 0) + 1;
+        }
+        return counts;
+      })()
+    : null;
+
   return (
     <div className="space-y-6">
-      {/* top grid */}
+      {/* top grid: real AI metrics when ar available, demo when not */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <MetricCard
-          icon={<Globe className="h-4 w-4" />}
-          label="SEO Impressions"
-          value="142.8K"
-          change="+14.2%"
-          positive
-          sparkData={SPARK_SEO}
-          color="#818cf8"
-        />
-        <MetricCard
-          icon={<DollarSign className="h-4 w-4" />}
-          label="Ads Spend"
-          value="3,420"
-          change="+8.1%"
-          positive
-          sparkData={SPARK_ADS}
-          color="#fbbf24"
-          currency="CHF / month"
-        />
-        <MetricCard
-          icon={<MousePointer2 className="h-4 w-4" />}
-          label="Click-Through Rate"
-          value="3.2%"
-          change="+0.3%"
-          positive
-          sparkData={SPARK_CTR}
-          color="#34d399"
-        />
-        <MetricCard
-          icon={<Users className="h-4 w-4" />}
-          label="Conversion Rate"
-          value="3.82%"
-          change="-0.3%"
-          positive={false}
-          sparkData={SPARK_CONV}
-          color="#f87171"
-        />
+        {ar ? (
+          <>
+            <MetricCard
+              icon={<Gauge className="h-4 w-4" />}
+              label="SEO Score"
+              value={`${ar.seoScore ?? 0}/100`}
+              change={ar.seoScore && ar.seoScore >= 70 ? "Good" : ar.seoScore && ar.seoScore >= 50 ? "Average" : "Needs Work"}
+              positive={(ar.seoScore ?? 0) >= 70}
+              sparkData={SPARK_SEO}
+              color="#818cf8"
+            />
+            <MetricCard
+              icon={<Activity className="h-4 w-4" />}
+              label="Health Score"
+              value={`${ar.healthScore ?? 0}/100`}
+              change={(ar.healthScore ?? 0) >= 70 ? "Healthy" : (ar.healthScore ?? 0) >= 50 ? "Average" : "Critical"}
+              positive={(ar.healthScore ?? 0) >= 70}
+              sparkData={SPARK_ADS}
+              color="#34d399"
+            />
+            <MetricCard
+              icon={<AlertTriangle className="h-4 w-4" />}
+              label="Critical Issues"
+              value={`${criticalCount}`}
+              change={`${issueCount} total`}
+              positive={criticalCount === 0}
+              sparkData={SPARK_CTR}
+              color={criticalCount > 0 ? "#f87171" : "#34d399"}
+            />
+            <MetricCard
+              icon={<Search className="h-4 w-4" />}
+              label="Keywords Found"
+              value={`${kwCount}`}
+              change="opportunities"
+              positive={kwCount > 0}
+              sparkData={SPARK_CONV}
+              color="#fbbf24"
+            />
+          </>
+        ) : (
+          <>
+            <MetricCard
+              icon={<Globe className="h-4 w-4" />}
+              label="SEO Impressions"
+              value="142.8K"
+              change="+14.2%"
+              positive
+              sparkData={SPARK_SEO}
+              color="#818cf8"
+            />
+            <MetricCard
+              icon={<DollarSign className="h-4 w-4" />}
+              label="Ads Spend"
+              value="3,420"
+              change="+8.1%"
+              positive
+              sparkData={SPARK_ADS}
+              color="#fbbf24"
+              currency="CHF / month"
+            />
+            <MetricCard
+              icon={<MousePointer2 className="h-4 w-4" />}
+              label="Click-Through Rate"
+              value="3.2%"
+              change="+0.3%"
+              positive
+              sparkData={SPARK_CTR}
+              color="#34d399"
+            />
+            <MetricCard
+              icon={<Users className="h-4 w-4" />}
+              label="Conversion Rate"
+              value="3.82%"
+              change="-0.3%"
+              positive={false}
+              sparkData={SPARK_CONV}
+              color="#f87171"
+            />
+          </>
+        )}
       </div>
 
-      {/* health + channels + actions */}
+      {/* health + channels + chart/insight */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Health Score */}
         <Card
@@ -559,12 +639,7 @@ function OverviewView({ ar }: { ar?: AnalysisResult | null }) {
           </div>
           <HealthRing score={healthScore} />
           <div className="w-full space-y-2.5">
-            {[
-              { label: "Technical SEO", score: 88, color: "#818cf8" },
-              { label: "Google Ads", score: 94, color: "#34d399" },
-              { label: "Content", score: 62, color: "#fbbf24" },
-              { label: "Conversion", score: 58, color: "#f87171" },
-            ].map((c) => (
+            {channels.map((c) => (
               <div key={c.label}>
                 <div className="flex justify-between text-xs mb-1">
                   <span className="text-white/50">{c.label}</span>
@@ -581,49 +656,84 @@ function OverviewView({ ar }: { ar?: AnalysisResult | null }) {
           </div>
         </Card>
 
-        {/* Weekly traffic */}
-        <Card className="p-5">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h3 className="text-sm font-bold text-white">Weekly Clicks</h3>
-              <p className="text-xs text-white/35 mt-0.5">
-                Organic search · last 7 days
-              </p>
+        {/* Keywords intent chart (real) OR Weekly traffic (demo) */}
+        {ar && intentCounts && Object.keys(intentCounts).length > 0 ? (
+          <Card className="p-5">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h3 className="text-sm font-bold text-white">Keyword Intents</h3>
+                <p className="text-xs text-white/35 mt-0.5">
+                  From AI analysis · {kwCount} keywords
+                </p>
+              </div>
+              <Badge label="Keywords" color="indigo" />
             </div>
-            <Badge label="SEO" color="indigo" />
-          </div>
-          <div className="flex items-end gap-2 h-28">
-            {WEEKLY_CLICKS.map((v, i) => {
-              const max = Math.max(...WEEKLY_CLICKS);
-              const days = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-              return (
-                <div
-                  key={i}
-                  className="flex-1 flex flex-col items-center gap-1.5"
-                >
-                  <div
-                    className="w-full rounded-t-lg transition-all"
-                    style={{
-                      height: `${(v / max) * 90}%`,
-                      background: i === 6 ? "#6366f1" : "rgba(99,102,241,0.25)",
-                    }}
-                  />
-                  <span className="text-[9px] text-white/25 font-semibold">
-                    {days[i]}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-          <div className="mt-4 flex items-center justify-between text-xs">
-            <span className="text-white/35">
-              Total: <strong className="text-white">6,790</strong>
-            </span>
-            <span className="text-emerald-400 font-bold">
-              ↑ 12.3% vs last week
-            </span>
-          </div>
-        </Card>
+            <div className="flex items-end gap-2 h-28">
+              {Object.entries(intentCounts).map(([intent, count], i) => {
+                const maxVal = Math.max(...Object.values(intentCounts));
+                const colors = ["#6366f1", "#34d399", "#fbbf24", "#f87171"];
+                return (
+                  <div key={intent} className="flex-1 flex flex-col items-center gap-1.5">
+                    <div
+                      className="w-full rounded-t-lg transition-all"
+                      style={{
+                        height: `${(count / maxVal) * 90}%`,
+                        background: colors[i % colors.length],
+                      }}
+                    />
+                    <span className="text-[9px] text-white/40 font-semibold text-center leading-tight">
+                      {intent.slice(0, 4)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-4 flex items-center justify-between text-xs">
+              <span className="text-white/35">
+                Total: <strong className="text-white">{kwCount}</strong> keywords
+              </span>
+              <span className="text-indigo-400 font-bold">AI Analysis</span>
+            </div>
+          </Card>
+        ) : (
+          <Card className="p-5">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h3 className="text-sm font-bold text-white">Weekly Clicks</h3>
+                <p className="text-xs text-white/35 mt-0.5">
+                  Organic search · last 7 days
+                </p>
+              </div>
+              <Badge label="Demo" color="amber" />
+            </div>
+            <div className="flex items-end gap-2 h-28">
+              {WEEKLY_CLICKS.map((v, i) => {
+                const max = Math.max(...WEEKLY_CLICKS);
+                const days = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+                    <div
+                      className="w-full rounded-t-lg transition-all"
+                      style={{
+                        height: `${(v / max) * 90}%`,
+                        background: i === 6 ? "#6366f1" : "rgba(99,102,241,0.25)",
+                      }}
+                    />
+                    <span className="text-[9px] text-white/25 font-semibold">
+                      {days[i]}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-4 flex items-center justify-between text-xs">
+              <span className="text-white/35">
+                Total: <strong className="text-white">6,790</strong>
+              </span>
+              <span className="text-white/25 font-bold">Connect GSC →</span>
+            </div>
+          </Card>
+        )}
 
         {/* AI Insights */}
         <Card glow="rgba(139,92,246,0.07)" className="p-5 flex flex-col gap-4">
@@ -634,7 +744,7 @@ function OverviewView({ ar }: { ar?: AnalysisResult | null }) {
             <div>
               <h3 className="text-sm font-bold text-white">AI Insight</h3>
               <p className="text-[11px] text-white/35">
-                Deterministic · 96% confidence
+                {ar ? "DeepSeek · Real analysis" : "Deterministic · 96% confidence"}
               </p>
             </div>
           </div>
@@ -645,12 +755,12 @@ function OverviewView({ ar }: { ar?: AnalysisResult | null }) {
             {[
               {
                 label: "Source",
-                val: ar ? "DeepSeek AI Analysis" : "GSC + GAds API",
+                val: ar ? "DeepSeek AI Analysis" : "Demo Data",
               },
               { label: "Language", val: ar?.languageName ?? "–" },
               {
                 label: "SEO Score",
-                val: ar?.seoScore ? `${ar.seoScore}/100` : "74/100",
+                val: ar?.seoScore != null ? `${ar.seoScore}/100` : "–",
               },
             ].map((r) => (
               <div key={r.label} className="flex justify-between text-[11px]">
@@ -1607,10 +1717,12 @@ function AnalysisLoadingOverlay() {
 export function DashboardPageContent({
   analysisResult,
   analysisLoading,
+  analysisError,
   onBack,
 }: {
   analysisResult?: AnalysisResult | null;
   analysisLoading?: boolean;
+  analysisError?: string | null;
   onBack?: () => void;
 }) {
   const [active, setActive] = useState<View>("overview");
@@ -1686,7 +1798,7 @@ export function DashboardPageContent({
                 ? analysisResult.url
                     .replace(/^https?:\/\//, "")
                     .replace(/\/$/, "")
-                : "Last 28 days · Swiss SaaS Demo"}
+                : "Analyze a URL to see real data"}
             </p>
           </div>
 
@@ -1759,6 +1871,15 @@ export function DashboardPageContent({
         <main className="relative flex-1 overflow-y-auto p-5 lg:p-7">
           {analysisLoading && <AnalysisLoadingOverlay />}
           <div className="max-w-7xl mx-auto">
+            {analysisError && (
+              <div className="mb-5 flex items-start gap-3 p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-300">
+                <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
+                <div>
+                  <p className="text-sm font-bold text-rose-300">Analysis Failed</p>
+                  <p className="text-xs text-rose-400/80 mt-0.5">{analysisError}</p>
+                </div>
+              </div>
+            )}
             {active === "overview" && <OverviewView ar={analysisResult} />}
             {active === "seo" && <SeoView ar={analysisResult} />}
             {active === "ads" && <AdsView />}
