@@ -12,8 +12,68 @@ import {
   Zap,
   CheckCircle2,
   ChevronRight,
+  Heart,
+  Coffee,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+
+// --- LOGO COMPONENT ---
+const Logo = () => (
+  <div className="flex items-center gap-2">
+    <div className="relative flex items-center justify-center w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-emerald-500 rounded-xl shadow-lg shadow-indigo-500/20 overflow-hidden">
+      <div className="absolute inset-[2px] bg-[#0c121e] rounded-[10px] flex items-center justify-center z-10">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 2L2 7L12 12L22 7L12 2Z"
+            stroke="url(#gradient)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M2 17L12 22L22 17"
+            stroke="url(#gradient)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M2 12L12 17L22 12"
+            stroke="url(#gradient)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <defs>
+            <linearGradient
+              id="gradient"
+              x1="2"
+              y1="2"
+              x2="22"
+              y2="22"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#818cf8" />
+              <stop offset="1" stopColor="#34d399" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <span className="font-extrabold text-2xl tracking-tight text-white flex items-center">
+      oiSio
+      <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400 ml-1">
+        .ai
+      </span>
+    </span>
+  </div>
+);
 
 // --- MOCK AD COMPONENT ---
 const GoogleAdSlot = ({
@@ -91,6 +151,12 @@ const content = {
     f6Title: "Google Ads (SEA) RSA Analizi",
     f6Desc:
       "Maliyetleri düşüren ve tıklamaları artıran profesyonel Google Ads içgörüleri.",
+    donationTitle: "Bu Araç Tamamen Ücretsiz Kalsın",
+    donationDesc:
+      "Projeyi yaşatmak, reklamları azaltmak veya bir kahve ısmarlamak isterseniz bize destek olabilirsiniz. Bütün destekler şeffaf olarak sunucu masraflarına aktarılır.",
+    donateBtn: "Bize Bir Kahve Ismarla",
+    cryptoAddress: "USDT (TRC20): TXYZabc123...dummyAddress",
+    ibanStr: "IBAN: TR00 0000 0000 0000 0000 0000 00 (Cuma Kaya)",
   },
   DE: {
     works: "Wie es funktioniert?",
@@ -135,6 +201,12 @@ const content = {
     f6Title: "Google Ads (SEA) RSA Analyse",
     f6Desc:
       "Professionelle Google Ads-Insights, die Kosten senken und Klicks erhöhen.",
+    donationTitle: "Unterstützen Sie unser kostenloses Tool",
+    donationDesc:
+      "Wenn Sie das Projekt am Leben erhalten, Werbung reduzieren oder uns einen Kaffee spendieren möchten, können Sie uns unterstützen. Alle Spenden fließen direkt in unsere Serverkosten.",
+    donateBtn: "Spendieren Sie uns einen Kaffee",
+    cryptoAddress: "USDT (TRC20): TXYZabc123...dummyAddress",
+    ibanStr: "IBAN: DE00 0000 0000 0000 0000 00 (Cuma Kaya)",
   },
   EN: {
     works: "How it works?",
@@ -178,6 +250,12 @@ const content = {
     f6Title: "Google Ads (SEA) RSA Analysis",
     f6Desc:
       "Professional Google Ads insights that reduce costs and increase clicks.",
+    donationTitle: "Keep This Tool Free Forever",
+    donationDesc:
+      "If you'd like to support the project, reduce ads, or simply buy us a coffee, you can contribute below. All support goes directly towards our server costs.",
+    donateBtn: "Buy Us a Coffee",
+    cryptoAddress: "USDT (TRC20): TXYZabc123...dummyAddress",
+    ibanStr: "IBAN: CH00 0000 0000 0000 0000 00 (Cuma Kaya)",
   },
 };
 
@@ -249,19 +327,11 @@ export function FreeToolView({
   };
 
   return (
-    <div className="min-h-screen bg-[#060910] text-slate-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen bg-[#06080F] text-slate-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
       {/* HEADER WITH LANGUAGE SWITCHER (FLAGS) */}
-      <header className="border-b border-slate-800/80 bg-[#0c121e]/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 font-black text-white shadow-lg shadow-indigo-500/20">
-              oi
-            </div>
-            <span className="font-bold text-lg tracking-tight">
-              oiSio{" "}
-              <span className="font-normal text-slate-400">Intelligence</span>
-            </span>
-          </div>
+      <header className="border-b border-slate-800/60 bg-[#06080F]/90 backdrop-blur-2xl sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <Logo />
 
           <div className="flex items-center gap-6">
             <nav className="hidden md:flex gap-6 text-sm font-medium text-slate-400">
@@ -412,7 +482,7 @@ export function FreeToolView({
       </main>
 
       {/* MID-PAGE AD & EXPLANATION SECTION */}
-      <div className="bg-[#080c14] py-20">
+      <div className="bg-[#0b101a] py-20">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-4 gap-12 items-center">
           <div className="lg:col-span-3">
             <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
@@ -425,15 +495,17 @@ export function FreeToolView({
                 {t.bullets.map((bullet, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-3 bg-[#0a0f18] border border-slate-800/50 p-4 rounded-xl"
+                    className="flex items-start gap-4 bg-[#0a0f18]/50 border border-slate-800/40 shadow-sm p-4 rounded-xl"
                   >
-                    <CheckCircle2 className="h-6 w-6 text-emerald-500 shrink-0" />
-                    <span className="text-sm md:text-base">{bullet}</span>
+                    <CheckCircle2 className="h-6 w-6 text-emerald-400 shrink-0" />
+                    <span className="text-sm md:text-base leading-relaxed">
+                      {bullet}
+                    </span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-8 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-200 text-sm">
-                <span className="font-bold mr-1">💡 Not:</span> {t.footNote}
+              <div className="mt-8 p-5 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-200 text-sm leading-relaxed">
+                <span className="font-bold mr-1">💡 Note:</span> {t.footNote}
               </div>
             </div>
           </div>
@@ -442,6 +514,41 @@ export function FreeToolView({
           </div>
         </div>
       </div>
+
+      {/* DONATION & SUPPORT FOOTER */}
+      <footer className="border-t border-slate-800/60 bg-[#06080F] py-16">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12">
+          <div className="flex-1 max-w-xl">
+            <div className="flex items-center gap-2 mb-4 text-emerald-400">
+              <Heart className="h-5 w-5" />
+              <h3 className="font-bold text-lg text-white">
+                {t.donationTitle}
+              </h3>
+            </div>
+            <p className="text-slate-400 text-sm leading-relaxed mb-6">
+              {t.donationDesc}
+            </p>
+            <div className="flex flex-col gap-3 text-xs text-slate-500 font-mono">
+              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 w-fit select-all hover:border-slate-600 transition-colors">
+                {t.cryptoAddress}
+              </div>
+              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 w-fit select-all hover:border-slate-600 transition-colors">
+                {t.ibanStr}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center justify-center shrink-0">
+            <Button className="rounded-xl px-6 py-6 h-auto text-base font-bold shadow-lg shadow-amber-500/20 bg-amber-500 hover:bg-amber-400 text-amber-950 flex items-center gap-2 transition-transform hover:scale-105">
+              <Coffee className="h-5 w-5" />
+              {t.donateBtn}
+            </Button>
+            <span className="mt-4 text-xs text-slate-600 text-center max-w-[200px]">
+              oiSio is voluntarily maintained. Thank you for your support.
+            </span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
