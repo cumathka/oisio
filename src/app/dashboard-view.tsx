@@ -1724,7 +1724,9 @@ export function DashboardPageContent({
                 >
                   <span className="font-black text-lg">
                     <span className="text-white">oiSio</span>
-                    <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">.ai</span>
+                    <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+                      .ai
+                    </span>
                   </span>
                 </button>
                 <button
