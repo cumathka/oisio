@@ -656,6 +656,14 @@ export function FreeToolView({
     [url, lang, onAnalyze],
   );
 
+  const focusHero = useCallback(() => {
+    const el = inputRef.current;
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => el.focus(), 400);
+    }
+  }, []);
+
   const allTags = [...new Set(TOOLS.map((x) => x.tag[lang]))];
   const filteredTools = activeTag
     ? TOOLS.filter((x) => x.tag[lang] === activeTag)
@@ -983,7 +991,7 @@ export function FreeToolView({
           {filteredTools.map((tool, i) => (
             <button
               key={i}
-              onClick={() => onAnalyze("https://example.com")}
+              onClick={focusHero}
               className="group relative text-left p-5 rounded-2xl border border-white/[0.06] overflow-hidden transition-all duration-300 hover:border-white/[0.14] hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-black/30"
               style={{ background: "rgba(255,255,255,0.025)" }}
             >
