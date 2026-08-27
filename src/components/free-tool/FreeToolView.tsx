@@ -33,11 +33,91 @@ import {
   Zap,
   Shield,
   Globe,
+  ChevronDown,
 } from "lucide-react";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
-type Lang = "TR" | "DE" | "EN";
-const FLAGS: Record<Lang, string> = { TR: "🇹🇷", DE: "🇩🇪", EN: "🇬🇧" };
+type Lang =
+  | "TR"
+  | "DE"
+  | "EN"
+  | "FR"
+  | "ES"
+  | "IT"
+  | "NL"
+  | "PT"
+  | "PL"
+  | "RU"
+  | "ZH"
+  | "JA"
+  | "AR";
+const FLAGS: Record<Lang, string> = {
+  TR: "🇹🇷",
+  DE: "🇩🇪",
+  EN: "🇬🇧",
+  FR: "🇫🇷",
+  ES: "🇪🇸",
+  IT: "🇮🇹",
+  NL: "🇳🇱",
+  PT: "🇵🇹",
+  PL: "🇵🇱",
+  RU: "🇷🇺",
+  ZH: "🇨🇳",
+  JA: "🇯🇵",
+  AR: "🇸🇦",
+};
+
+function detectBrowserLang(): Lang {
+  if (typeof navigator === "undefined") return "EN";
+  const raw = (navigator.language || "").toLowerCase().split("-")[0];
+  const map: Record<string, Lang> = {
+    tr: "TR",
+    de: "DE",
+    en: "EN",
+    fr: "FR",
+    es: "ES",
+    it: "IT",
+    nl: "NL",
+    pt: "PT",
+    pl: "PL",
+    ru: "RU",
+    zh: "ZH",
+    ja: "JA",
+    ar: "AR",
+  };
+  return map[raw] ?? "EN";
+}
+
+const SEO_LANGS: { flag: string; name: string }[] = [
+  { flag: "🇹🇷", name: "Türkçe" },
+  { flag: "🇩🇪", name: "Deutsch" },
+  { flag: "🇬🇧", name: "English" },
+  { flag: "🇫🇷", name: "Français" },
+  { flag: "🇪🇸", name: "Español" },
+  { flag: "🇮🇹", name: "Italiano" },
+  { flag: "🇳🇱", name: "Nederlands" },
+  { flag: "🇵🇹", name: "Português" },
+  { flag: "🇵🇱", name: "Polski" },
+  { flag: "🇷🇺", name: "Русский" },
+  { flag: "🇨🇳", name: "中文" },
+  { flag: "🇯🇵", name: "日本語" },
+  { flag: "🇸🇦", name: "العربية" },
+  { flag: "🇰🇷", name: "한국어" },
+  { flag: "🇧🇷", name: "Português BR" },
+  { flag: "🇸🇪", name: "Svenska" },
+  { flag: "🇩🇰", name: "Dansk" },
+  { flag: "🇳🇴", name: "Norsk" },
+  { flag: "🇫🇮", name: "Suomi" },
+  { flag: "🇺🇦", name: "Українська" },
+  { flag: "🇨🇿", name: "Čeština" },
+  { flag: "🇷🇴", name: "Română" },
+  { flag: "🇭🇺", name: "Magyar" },
+  { flag: "🇬🇷", name: "Ελληνικά" },
+  { flag: "🇮🇩", name: "Bahasa ID" },
+  { flag: "🇹🇭", name: "ไทย" },
+  { flag: "🇻🇳", name: "Tiếng Việt" },
+  { flag: "🇮🇱", name: "עברית" },
+];
 
 // ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
 const T = {
@@ -183,7 +263,8 @@ const T = {
   },
 };
 
-const TERMINAL: Record<Lang, string[]> = {
+type CoreLang = "TR" | "DE" | "EN";
+const TERMINAL: Record<CoreLang, string[]> = {
   TR: [
     "▶  robots.txt ve sitemap taranıyor…",
     "▶  DOM ve meta hiyerarşisi analiz ediliyor…",
@@ -433,7 +514,7 @@ const TOOLS = [
   },
 ];
 
-const CMP_ROWS: Record<Lang, string[]> = {
+const CMP_ROWS: Record<CoreLang, string[]> = {
   TR: [
     "Teknik SEO Tarama",
     "Anahtar Kelime Analizi",
@@ -626,11 +707,28 @@ export function FreeToolView({
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const t = T[lang];
+  const t = T[lang in T ? (lang as keyof typeof T) : "EN"];
+  const tLang = (lang in T ? lang : "EN") as keyof typeof T;
+
+  const [langPickerOpen, setLangPickerOpen] = useState(false);
+  const langPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const l = navigator.language.split("-")[0].toUpperCase();
-    setLang(l === "TR" ? "TR" : l === "DE" ? "DE" : "EN");
+    setLang(detectBrowserLang());
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (
+        langPickerRef.current &&
+        !langPickerRef.current.contains(e.target as Node)
+      ) {
+        setLangPickerOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   const handleAnalyze = useCallback(
@@ -642,7 +740,8 @@ export function FreeToolView({
       }
       setLoading(true);
       setTermStep(0);
-      const steps = TERMINAL[lang];
+      const steps =
+        TERMINAL[lang in TERMINAL ? (lang as keyof typeof TERMINAL) : "EN"];
       steps.forEach((_, i) => setTimeout(() => setTermStep(i), i * 450));
       setTimeout(
         () => {
@@ -664,9 +763,9 @@ export function FreeToolView({
     }
   }, []);
 
-  const allTags = [...new Set(TOOLS.map((x) => x.tag[lang]))];
+  const allTags = [...new Set(TOOLS.map((x) => x.tag[tLang]))];
   const filteredTools = activeTag
-    ? TOOLS.filter((x) => x.tag[lang] === activeTag)
+    ? TOOLS.filter((x) => x.tag[tLang] === activeTag)
     : TOOLS;
 
   return (
@@ -709,17 +808,55 @@ export function FreeToolView({
             </nav>
 
             <div className="flex items-center gap-2">
-              {/* lang pills */}
-              <div className="hidden sm:flex gap-0.5 p-0.5 rounded-xl bg-white/[0.04] border border-white/[0.06]">
-                {(["DE", "EN", "TR"] as Lang[]).map((l) => (
-                  <button
-                    key={l}
-                    onClick={() => setLang(l)}
-                    className={`h-7 px-3 text-xs font-bold rounded-[10px] transition-all ${lang === l ? "bg-white/[0.12] text-white" : "text-white/35 hover:text-white/70"}`}
-                  >
-                    {FLAGS[l]} {l}
-                  </button>
-                ))}
+              {/* lang dropdown */}
+              <div ref={langPickerRef} className="relative hidden sm:block">
+                <button
+                  onClick={() => setLangPickerOpen((o) => !o)}
+                  className="flex items-center gap-1.5 h-8 px-3 text-xs font-bold rounded-xl bg-white/[0.04] border border-white/[0.06] text-white hover:bg-white/[0.08] transition-all"
+                >
+                  <span>{FLAGS[lang]}</span>
+                  <span className="text-white/70">{lang}</span>
+                  <ChevronDown
+                    className={`h-3 w-3 text-white/40 transition-transform duration-200 ${langPickerOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {langPickerOpen && (
+                  <div className="absolute right-0 top-10 z-50 w-52 rounded-2xl border border-white/[0.09] bg-[#07091a]/95 backdrop-blur-2xl shadow-2xl shadow-black/60 p-1.5 grid grid-cols-2 gap-0.5">
+                    {(
+                      [
+                        "DE",
+                        "EN",
+                        "TR",
+                        "FR",
+                        "ES",
+                        "IT",
+                        "NL",
+                        "PT",
+                        "PL",
+                        "RU",
+                        "ZH",
+                        "JA",
+                        "AR",
+                      ] as Lang[]
+                    ).map((l) => (
+                      <button
+                        key={l}
+                        onClick={() => {
+                          setLang(l);
+                          setLangPickerOpen(false);
+                        }}
+                        className={`flex items-center gap-2 px-2.5 py-2 text-xs font-semibold rounded-xl transition-all ${
+                          lang === l
+                            ? "bg-indigo-500/20 text-white border border-indigo-500/30"
+                            : "text-white/50 hover:text-white hover:bg-white/[0.06]"
+                        }`}
+                      >
+                        <span className="text-base">{FLAGS[l]}</span>
+                        <span>{l}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <a
                 href="#donate"
@@ -754,17 +891,33 @@ export function FreeToolView({
                 {item}
               </a>
             ))}
-            <div className="flex gap-2 pt-2 border-t border-white/[0.05]">
-              {(["DE", "EN", "TR"] as Lang[]).map((l) => (
+            <div className="grid grid-cols-4 gap-1.5 pt-2 border-t border-white/[0.05]">
+              {(
+                [
+                  "DE",
+                  "EN",
+                  "TR",
+                  "FR",
+                  "ES",
+                  "IT",
+                  "NL",
+                  "PT",
+                  "PL",
+                  "RU",
+                  "ZH",
+                  "JA",
+                  "AR",
+                ] as Lang[]
+              ).map((l) => (
                 <button
                   key={l}
                   onClick={() => {
                     setLang(l);
                     setMobileOpen(false);
                   }}
-                  className={`flex-1 py-2 text-sm font-bold rounded-xl border transition-all ${lang === l ? "border-indigo-500/40 bg-indigo-500/10 text-white" : "border-white/[0.08] text-white/30"}`}
+                  className={`py-2 text-xs font-bold rounded-xl border transition-all ${lang === l ? "border-indigo-500/40 bg-indigo-500/10 text-white" : "border-white/[0.08] text-white/30"}`}
                 >
-                  {FLAGS[l]} {l}
+                  {FLAGS[l]}
                 </button>
               ))}
             </div>
@@ -850,7 +1003,14 @@ export function FreeToolView({
             {/* animated border gradient */}
             <div className="absolute -inset-px rounded-[22px] bg-gradient-to-r from-indigo-500/0 via-violet-500/0 to-emerald-500/0 group-focus-within:from-indigo-500/60 group-focus-within:via-violet-500/50 group-focus-within:to-emerald-500/50 transition-all duration-500 blur-[2px] pointer-events-none" />
             <div className="relative flex items-center gap-2 bg-white/[0.05] border border-white/[0.10] group-focus-within:border-transparent rounded-[20px] p-2 shadow-[0_8px_40px_rgba(0,0,0,0.4)] transition-all">
-              <Search className="h-5 w-5 text-white/25 ml-3 shrink-0" />
+              {loading ? (
+                <div className="ml-3 shrink-0 relative w-5 h-5">
+                  <div className="absolute inset-0 rounded-full border-2 border-indigo-500/30" />
+                  <div className="absolute inset-0 rounded-full border-2 border-t-indigo-400 border-r-violet-400 border-b-transparent border-l-transparent animate-spin" />
+                </div>
+              ) : (
+                <Search className="h-5 w-5 text-white/25 ml-3 shrink-0" />
+              )}
               <input
                 ref={inputRef}
                 type="url"
@@ -858,19 +1018,27 @@ export function FreeToolView({
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder={t.placeholder}
                 disabled={loading}
-                className="flex-1 min-w-0 bg-transparent outline-none text-white text-base md:text-lg placeholder-white/20 py-3.5 pr-2"
+                className="flex-1 min-w-0 bg-transparent outline-none text-white text-base md:text-lg placeholder-white/20 py-3.5 pr-2 disabled:opacity-60"
                 required
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="shrink-0 flex items-center gap-2 px-5 py-3.5 rounded-[14px] font-bold text-sm md:text-base text-white transition-all active:scale-95 disabled:opacity-50"
+                className="relative shrink-0 flex items-center gap-2 px-5 py-3.5 rounded-[14px] font-bold text-sm md:text-base text-white transition-all active:scale-95 overflow-hidden"
                 style={{
-                  background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
+                  background: loading
+                    ? "linear-gradient(135deg,#4f52c7,#7c4ddb)"
+                    : "linear-gradient(135deg,#6366f1,#8b5cf6)",
+                  boxShadow: loading
+                    ? "0 0 20px rgba(99,102,241,0.4)"
+                    : "0 4px 15px rgba(99,102,241,0.3)",
                 }}
               >
+                {loading && (
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_1.5s_infinite] pointer-events-none" />
+                )}
                 {loading ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <Sparkles className="h-4 w-4 animate-pulse" />
                 ) : (
                   <Sparkles className="h-4 w-4" />
                 )}
@@ -893,14 +1061,21 @@ export function FreeToolView({
                     oiSio.ai — analysis engine
                   </span>
                 </div>
-                {TERMINAL[lang].map((step, i) => (
-                  <div
-                    key={i}
-                    className={`transition-all duration-300 ${i <= termStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"} ${i === TERMINAL[lang].length - 1 && i <= termStep ? "text-emerald-400 font-bold" : "text-white/40"}`}
-                  >
-                    {step}
-                  </div>
-                ))}
+                {TERMINAL[
+                  lang in TERMINAL ? (lang as keyof typeof TERMINAL) : "EN"
+                ].map((step, i) => {
+                  const termLang =
+                    lang in TERMINAL ? (lang as keyof typeof TERMINAL) : "EN";
+                  const steps2 = TERMINAL[termLang];
+                  return (
+                    <div
+                      key={i}
+                      className={`transition-all duration-300 ${i <= termStep ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"} ${i === steps2.length - 1 && i <= termStep ? "text-emerald-400 font-bold" : "text-white/40"}`}
+                    >
+                      {step}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </form>
@@ -956,6 +1131,47 @@ export function FreeToolView({
         </div>
       </div>
 
+      {/* ── FLAGS MARQUEE ──────────────────────────────────────────────────── */}
+      <div className="py-6 overflow-hidden border-b border-white/[0.04] relative">
+        <div
+          className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(90deg, #050810, transparent)" }}
+        />
+        <div
+          className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
+          style={{
+            background: "linear-gradient(-90deg, #050810, transparent)",
+          }}
+        />
+        <div className="text-center mb-4">
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/25">
+            SEO Support in 99+ Languages
+          </span>
+        </div>
+        <style>{`
+          @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+        `}</style>
+        <div
+          className="flex gap-3"
+          style={{
+            animation: "marquee 35s linear infinite",
+            width: "max-content",
+          }}
+        >
+          {[...SEO_LANGS, ...SEO_LANGS].map((item, i) => (
+            <div
+              key={i}
+              className="shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl border border-white/[0.06] bg-white/[0.02]"
+            >
+              <span className="text-xl leading-none">{item.flag}</span>
+              <span className="text-xs font-semibold text-white/45 whitespace-nowrap">
+                {item.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── TOOLS ──────────────────────────────────────────────────────────── */}
       <section id="tools" className="max-w-7xl mx-auto px-5 py-20">
         <div className="text-center mb-10">
@@ -1005,7 +1221,7 @@ export function FreeToolView({
                 className="absolute top-3.5 right-3.5 text-[9px] font-bold uppercase tracking-widest"
                 style={{ color: `${tool.color}70` }}
               >
-                {tool.tag[lang]}
+                {tool.tag[tLang]}
               </span>
               {/* icon in circle */}
               <div
@@ -1018,10 +1234,10 @@ export function FreeToolView({
                 <ToolIcon name={tool.icon} color={tool.color} />
               </div>
               <h3 className="relative text-sm font-bold text-white mb-1.5 pr-8">
-                {tool.title[lang]}
+                {tool.title[tLang]}
               </h3>
               <p className="relative text-xs text-white/35 leading-relaxed">
-                {tool.desc[lang]}
+                {tool.desc[tLang]}
               </p>
               <div
                 className="relative mt-3 flex items-center gap-1 text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity"
@@ -1092,8 +1308,8 @@ export function FreeToolView({
                   </tr>
                 </thead>
                 <tbody>
-                  {CMP_ROWS[lang].map((row, i) => {
-                    const isLast = i === CMP_ROWS[lang].length - 1;
+                  {CMP_ROWS[tLang].map((row, i) => {
+                    const isLast = i === CMP_ROWS[tLang].length - 1;
                     return (
                       <tr
                         key={i}
@@ -1335,8 +1551,24 @@ export function FreeToolView({
         <div className="max-w-7xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <OiSioLogo compact />
           <p className="text-xs text-white/20 font-medium">{t.footer_tag}</p>
-          <div className="flex gap-2">
-            {(["DE", "EN", "TR"] as Lang[]).map((l) => (
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {(
+              [
+                "DE",
+                "EN",
+                "TR",
+                "FR",
+                "ES",
+                "IT",
+                "NL",
+                "PT",
+                "PL",
+                "RU",
+                "ZH",
+                "JA",
+                "AR",
+              ] as Lang[]
+            ).map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}

@@ -48,6 +48,57 @@ import {
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 type View = "overview" | "seo" | "ads" | "cro" | "ai" | "reports" | "settings";
 
+export interface AnalysisResult {
+  url: string;
+  language?: string;
+  languageName?: string;
+  languageNative?: string;
+  seoScore?: number;
+  healthScore?: number;
+  issues?: Array<{
+    severity: "critical" | "warning" | "info";
+    title: string;
+    detail: string;
+    impact: string;
+  }>;
+  keywords?: Array<{
+    keyword: string;
+    intent: "Commercial" | "Informational" | "Navigational" | "Transactional";
+    difficulty: "Low" | "Medium" | "High";
+    opportunity?: "High" | "Medium" | "Low";
+  }>;
+  recommendations?: Array<{
+    priority: "DO_FIRST" | "PLAN" | "OPTIONAL";
+    title: string;
+    detail: string;
+    effort: "Low" | "Medium" | "High";
+    impact: string;
+  }>;
+  titleAnalysis?: {
+    length: number;
+    isOptimal: boolean;
+    score: number;
+    feedback: string;
+  };
+  descriptionAnalysis?: {
+    length: number;
+    isOptimal: boolean;
+    score: number;
+    feedback: string;
+  };
+  technicalSummary?: string;
+  aiInsight?: string;
+  seoData?: {
+    lang: string;
+    title: string;
+    description: string;
+    imgMissingAlt: number;
+    hasSchema: boolean;
+    hreflangLangs: string[];
+    hasViewport: boolean;
+  };
+}
+
 // ─── SPARKLINE (pure SVG) ─────────────────────────────────────────────────────
 function Sparkline({
   data,
@@ -414,7 +465,40 @@ const CRO_TESTS = [
 
 // ─── VIEWS ───────────────────────────────────────────────────────────────────
 
-function OverviewView() {
+function OverviewView({ ar }: { ar?: AnalysisResult | null }) {
+  const healthScore = ar?.healthScore ?? 74;
+  const aiInsight =
+    ar?.aiInsight ??
+    'Swiss users searching "Marketing Automatisierung Schweiz" convert +42% higher on German landing pages with explicit CHF pricing.';
+  const recs = ar?.recommendations ?? [
+    {
+      priority: "DO_FIRST" as const,
+      title: "Fix Missing Canonical Tags on Multi-Currency Pages",
+      detail: "Effort: 15 min",
+      effort: "Low" as const,
+      impact: "+4.5 SEO pts",
+    },
+    {
+      priority: "PLAN" as const,
+      title: "Launch Swiss-German B2B Content Topic Cluster",
+      detail: "Effort: 2 hours",
+      effort: "Medium" as const,
+      impact: "+85 leads/mo",
+    },
+    {
+      priority: "OPTIONAL" as const,
+      title: "Add Alt Text to Product Graphics",
+      detail: "Effort: 15 min",
+      effort: "Low" as const,
+      impact: "+1.5 SEO pts",
+    },
+  ];
+  const recColor: Record<string, "rose" | "amber" | "indigo"> = {
+    DO_FIRST: "rose",
+    PLAN: "amber",
+    OPTIONAL: "indigo",
+  };
+
   return (
     <div className="space-y-6">
       {/* top grid */}
@@ -467,8 +551,13 @@ function OverviewView() {
         >
           <div className="text-xs font-bold uppercase tracking-widest text-white/30">
             Overall Health
+            {ar?.language && (
+              <span className="ml-2 text-indigo-400 normal-case font-semibold">
+                · {ar.languageName ?? ar.language.toUpperCase()}
+              </span>
+            )}
           </div>
-          <HealthRing score={74} />
+          <HealthRing score={healthScore} />
           <div className="w-full space-y-2.5">
             {[
               { label: "Technical SEO", score: 88, color: "#818cf8" },
@@ -550,21 +639,19 @@ function OverviewView() {
             </div>
           </div>
           <div className="flex-1 bg-violet-500/[0.05] border border-violet-500/10 rounded-xl p-4">
-            <p className="text-xs text-white/60 leading-relaxed">
-              Swiss users searching{" "}
-              <span className="text-white font-semibold">
-                "Marketing Automatisierung Schweiz"
-              </span>{" "}
-              convert{" "}
-              <span className="text-emerald-400 font-bold">+42% higher</span> on
-              German landing pages with explicit CHF pricing.
-            </p>
+            <p className="text-xs text-white/60 leading-relaxed">{aiInsight}</p>
           </div>
           <div className="space-y-2">
             {[
-              { label: "Source", val: "GSC + GAds API" },
-              { label: "Confidence", val: "96%" },
-              { label: "Est. impact", val: "+85 leads/mo" },
+              {
+                label: "Source",
+                val: ar ? "DeepSeek AI Analysis" : "GSC + GAds API",
+              },
+              { label: "Language", val: ar?.languageName ?? "–" },
+              {
+                label: "SEO Score",
+                val: ar?.seoScore ? `${ar.seoScore}/100` : "74/100",
+              },
             ].map((r) => (
               <div key={r.label} className="flex justify-between text-[11px]">
                 <span className="text-white/35">{r.label}</span>
@@ -584,49 +671,29 @@ function OverviewView() {
           <div>
             <h3 className="text-sm font-bold text-white">Priority Actions</h3>
             <p className="text-xs text-white/35 mt-0.5">
-              Ranked by Impact × Confidence ÷ Effort
+              {ar
+                ? "Real AI analysis · DeepSeek"
+                : "Ranked by Impact × Confidence ÷ Effort"}
             </p>
           </div>
-          <Badge label="3 open" color="amber" />
+          <Badge label={`${recs.length} open`} color="amber" />
         </div>
         <div className="divide-y divide-white/[0.04]">
-          {[
-            {
-              badge: "DO FIRST",
-              color: "rose" as const,
-              title: "Fix Missing Canonical Tags on Multi-Currency Pages",
-              effort: "15 min",
-              impact: "+4.5 SEO pts",
-              conf: "98%",
-            },
-            {
-              badge: "PLAN",
-              color: "amber" as const,
-              title: "Launch Swiss-German B2B Content Topic Cluster",
-              effort: "2 hours",
-              impact: "+85 leads/mo",
-              conf: "94%",
-            },
-            {
-              badge: "OPTIONAL",
-              color: "indigo" as const,
-              title: "Add Alt Text to 6 Product Graphics",
-              effort: "15 min",
-              impact: "+1.5 SEO pts",
-              conf: "88%",
-            },
-          ].map((a, i) => (
+          {recs.slice(0, 5).map((a, i) => (
             <div
               key={i}
               className="flex items-center gap-4 p-4 hover:bg-white/[0.02] transition-colors"
             >
-              <Badge label={a.badge} color={a.color} />
+              <Badge
+                label={a.priority.replace("_", " ")}
+                color={recColor[a.priority] ?? "indigo"}
+              />
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-white font-medium truncate">
                   {a.title}
                 </p>
                 <p className="text-[11px] text-white/35 mt-0.5">
-                  Effort: {a.effort} · Confidence: {a.conf}
+                  Effort: {a.effort} · {a.detail}
                 </p>
               </div>
               <div className="shrink-0 text-right hidden sm:block">
@@ -645,8 +712,10 @@ function OverviewView() {
   );
 }
 
-function SeoView() {
+function SeoView({ ar }: { ar?: AnalysisResult | null }) {
   const [tab, setTab] = useState<"audit" | "keywords">("audit");
+  const realIssues = ar?.issues;
+  const realKeywords = ar?.keywords;
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-1 p-1 bg-white/[0.03] border border-white/[0.06] rounded-xl w-fit">
@@ -667,32 +736,48 @@ function SeoView() {
             <div>
               <h3 className="text-sm font-bold text-white">Technical Issues</h3>
               <p className="text-xs text-white/35 mt-0.5">
-                108-criteria crawl · last run 2h ago
+                {ar
+                  ? "DeepSeek AI · real-time analysis"
+                  : "108-criteria crawl · last run 2h ago"}
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Badge label="2 critical" color="rose" />
-              <Badge label="2 warnings" color="amber" />
+              <Badge
+                label={`${(realIssues ?? SEO_ISSUES).filter((i) => ("severity" in i ? i.severity : (i as { sev: string }).sev) === "critical").length} critical`}
+                color="rose"
+              />
+              <Badge
+                label={`${(realIssues ?? SEO_ISSUES).filter((i) => ("severity" in i ? i.severity : (i as { sev: string }).sev) === "warning").length} warnings`}
+                color="amber"
+              />
               <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-white/60 hover:text-white bg-white/[0.04] border border-white/[0.08] rounded-xl hover:bg-white/[0.08] transition-all">
                 <RefreshCw className="h-3.5 w-3.5" /> Re-run
               </button>
             </div>
           </div>
           <div className="divide-y divide-white/[0.04]">
-            {SEO_ISSUES.map((issue) => (
+            {(
+              realIssues ??
+              SEO_ISSUES.map((i) => ({
+                severity: i.sev as "critical" | "warning" | "info",
+                title: i.title,
+                detail: i.url,
+                impact: i.impact,
+              }))
+            ).map((issue, idx) => (
               <div
-                key={issue.id}
+                key={idx}
                 className="flex items-center gap-4 p-4 hover:bg-white/[0.02] transition-colors"
               >
                 <div
-                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${issue.sev === "critical" ? "bg-rose-500" : issue.sev === "warning" ? "bg-amber-500" : "bg-indigo-500"}`}
+                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${issue.severity === "critical" ? "bg-rose-500" : issue.severity === "warning" ? "bg-amber-500" : "bg-indigo-500"}`}
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white font-medium">
                     {issue.title}
                   </p>
                   <p className="text-[11px] text-white/35 mt-0.5 font-mono truncate">
-                    {issue.url}
+                    {issue.detail}
                   </p>
                 </div>
                 <div className="shrink-0">
@@ -714,54 +799,86 @@ function SeoView() {
           <div className="p-5 border-b border-white/[0.06]">
             <h3 className="text-sm font-bold text-white">Keyword Rankings</h3>
             <p className="text-xs text-white/35 mt-0.5">
-              Live GSC data · top 6 by volume
+              {ar
+                ? "DeepSeek AI keyword analysis"
+                : "Live GSC data · top 6 by volume"}
             </p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/[0.04]">
-                  {["Keyword", "Volume", "Position", "Change", "Intent"].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-white/30"
-                      >
-                        {h}
-                      </th>
-                    ),
-                  )}
+                  {[
+                    "Keyword",
+                    ar ? "Difficulty" : "Volume",
+                    ar ? "Opportunity" : "Position",
+                    ar ? "" : "Change",
+                    "Intent",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-white/30"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.03]">
-                {KEYWORDS.map((kw, i) => (
+                {(
+                  realKeywords ??
+                  KEYWORDS.map((k) => ({
+                    keyword: k.kw,
+                    intent: k.intent as
+                      | "Commercial"
+                      | "Informational"
+                      | "Navigational"
+                      | "Transactional",
+                    difficulty: (k.chg > 0 ? "Medium" : "High") as
+                      | "Low"
+                      | "Medium"
+                      | "High",
+                    opportunity: "Medium" as "High" | "Medium" | "Low",
+                  }))
+                ).map((kw, i) => (
                   <tr
                     key={i}
                     className="hover:bg-white/[0.02] transition-colors"
                   >
                     <td className="py-3.5 px-5 text-white font-medium">
-                      {kw.kw}
-                    </td>
-                    <td className="py-3.5 px-5 text-white/60 tabular-nums">
-                      {kw.vol.toLocaleString()}
+                      {kw.keyword}
                     </td>
                     <td className="py-3.5 px-5">
-                      <span className="inline-flex items-center gap-1 text-sm font-black text-white">
-                        #{kw.pos}
-                      </span>
+                      <Badge
+                        label={kw.difficulty}
+                        color={
+                          kw.difficulty === "Low"
+                            ? "emerald"
+                            : kw.difficulty === "Medium"
+                              ? "amber"
+                              : "rose"
+                        }
+                      />
                     </td>
                     <td className="py-3.5 px-5">
-                      <span
-                        className={`text-xs font-bold ${kw.chg > 0 ? "text-emerald-400" : "text-rose-400"}`}
-                      >
-                        {kw.chg > 0 ? "▲" : "▼"} {Math.abs(kw.chg)}
-                      </span>
+                      <Badge
+                        label={kw.opportunity ?? "Medium"}
+                        color={
+                          kw.opportunity === "High"
+                            ? "emerald"
+                            : kw.opportunity === "Medium"
+                              ? "indigo"
+                              : "amber"
+                        }
+                      />
                     </td>
+                    <td className="py-3.5 px-5" />
                     <td className="py-3.5 px-5">
                       <Badge
                         label={kw.intent}
                         color={
-                          kw.intent === "Commercial"
+                          kw.intent === "Commercial" ||
+                          kw.intent === "Transactional"
                             ? "indigo"
                             : kw.intent === "Navigational"
                               ? "emerald"
@@ -1427,8 +1544,44 @@ function Sidebar({
   );
 }
 
+// ─── LOADING SKELETON ────────────────────────────────────────────────────────
+function AnalysisLoadingOverlay() {
+  return (
+    <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-5 bg-[#050810]/80 backdrop-blur-sm">
+      <div className="relative w-16 h-16">
+        <div className="absolute inset-0 rounded-full border-4 border-indigo-500/20" />
+        <div className="absolute inset-0 rounded-full border-4 border-t-indigo-500 border-r-violet-500 border-b-emerald-500 border-l-transparent animate-spin" />
+        <div className="absolute inset-3 rounded-full bg-gradient-to-br from-indigo-500/20 to-emerald-500/20 flex items-center justify-center">
+          <Sparkles className="h-5 w-5 text-violet-400 animate-pulse" />
+        </div>
+      </div>
+      <div className="text-center">
+        <p className="text-sm font-bold text-white">DeepSeek AI Analyzing…</p>
+        <p className="text-xs text-white/40 mt-1">
+          Fetching page · Extracting SEO signals · Building report
+        </p>
+      </div>
+      <div className="flex gap-1.5">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="w-1.5 h-1.5 rounded-full bg-indigo-400/60 animate-bounce"
+            style={{ animationDelay: `${i * 0.12}s` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN SHELL ───────────────────────────────────────────────────────────────
-export function DashboardPageContent() {
+export function DashboardPageContent({
+  analysisResult,
+  analysisLoading,
+}: {
+  analysisResult?: AnalysisResult | null;
+  analysisLoading?: boolean;
+}) {
   const [active, setActive] = useState<View>("overview");
   const [collapsed, setCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -1496,8 +1649,12 @@ export function DashboardPageContent() {
             <h1 className="text-sm font-bold text-white">
               {PAGE_TITLES[active]}
             </h1>
-            <p className="text-[11px] text-white/30 font-medium">
-              Last 28 days · Swiss SaaS Demo
+            <p className="text-[11px] text-white/30 font-medium truncate max-w-[240px]">
+              {analysisResult?.url
+                ? analysisResult.url
+                    .replace(/^https?:\/\//, "")
+                    .replace(/\/$/, "")
+                : "Last 28 days · Swiss SaaS Demo"}
             </p>
           </div>
 
@@ -1556,10 +1713,11 @@ export function DashboardPageContent() {
         )}
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-5 lg:p-7">
+        <main className="relative flex-1 overflow-y-auto p-5 lg:p-7">
+          {analysisLoading && <AnalysisLoadingOverlay />}
           <div className="max-w-7xl mx-auto">
-            {active === "overview" && <OverviewView />}
-            {active === "seo" && <SeoView />}
+            {active === "overview" && <OverviewView ar={analysisResult} />}
+            {active === "seo" && <SeoView ar={analysisResult} />}
             {active === "ads" && <AdsView />}
             {active === "cro" && <CroView />}
             {active === "ai" && <AiView />}
