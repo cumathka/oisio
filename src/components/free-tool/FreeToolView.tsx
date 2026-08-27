@@ -1000,9 +1000,9 @@ export function FreeToolView({
             onSubmit={handleAnalyze}
             className="relative max-w-2xl mx-auto group"
           >
-            {/* animated border gradient */}
-            <div className="absolute -inset-px rounded-[22px] bg-gradient-to-r from-indigo-500/0 via-violet-500/0 to-emerald-500/0 group-focus-within:from-indigo-500/60 group-focus-within:via-violet-500/50 group-focus-within:to-emerald-500/50 transition-all duration-500 blur-[2px] pointer-events-none" />
-            <div className="relative flex items-center gap-2 bg-white/[0.05] border border-white/[0.10] group-focus-within:border-transparent rounded-[20px] p-2 shadow-[0_8px_40px_rgba(0,0,0,0.4)] transition-all">
+            {/* subtle glow (always invisible — no focus ring) */}
+            <div className="pointer-events-none" />
+            <div className="relative flex items-center gap-2 bg-white/[0.05] border border-white/[0.10] rounded-[20px] p-2 shadow-[0_8px_40px_rgba(0,0,0,0.4)]">
               {loading ? (
                 <div className="ml-3 shrink-0 relative w-5 h-5">
                   <div className="absolute inset-0 rounded-full border-2 border-indigo-500/30" />
