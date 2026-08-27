@@ -11,7 +11,7 @@ export default function AppEntry() {
   );
   const [analysisLoading, setAnalysisLoading] = useState(false);
 
-  const handleAnalyzeStart = useCallback(async (url: string) => {
+  const handleAnalyzeStart = useCallback(async (url: string, lang: string) => {
     setAnalysisLoading(true);
     setAppState("app");
 
@@ -19,7 +19,7 @@ export default function AppEntry() {
       const resp = await fetch("/api/v1/deepseek-analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, uiLang: lang }),
       });
       if (resp.ok) {
         const data = await resp.json();
@@ -34,6 +34,11 @@ export default function AppEntry() {
     }
   }, []);
 
+  const handleBack = useCallback(() => {
+    setAppState("landing");
+    setAnalysisResult(null);
+  }, []);
+
   if (appState === "landing") {
     return <FreeToolView onAnalyze={handleAnalyzeStart} />;
   }
@@ -42,6 +47,7 @@ export default function AppEntry() {
     <DashboardPageContent
       analysisResult={analysisResult}
       analysisLoading={analysisLoading}
+      onBack={handleBack}
     />
   );
 }

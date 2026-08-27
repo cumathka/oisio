@@ -697,7 +697,7 @@ function CopyBtn({ text }: { text: string }) {
 export function FreeToolView({
   onAnalyze,
 }: {
-  onAnalyze: (url: string) => void;
+  onAnalyze: (url: string, lang: string) => void;
 }) {
   const [lang, setLang] = useState<Lang>("DE");
   const [url, setUrl] = useState("");
@@ -747,7 +747,7 @@ export function FreeToolView({
         () => {
           setLoading(false);
           setTermStep(-1);
-          onAnalyze(url.trim());
+          onAnalyze(url.trim(), lang);
         },
         steps.length * 450 + 400,
       );

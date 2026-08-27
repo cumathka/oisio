@@ -108,8 +108,26 @@ function buildPrompt(
   url: string,
   seoData: ReturnType<typeof extractSeoData>,
   fetchError: string,
+  uiLang: string,
 ) {
+  const langNames: Record<string, string> = {
+    TR: "Turkish",
+    DE: "German",
+    EN: "English",
+    FR: "French",
+    ES: "Spanish",
+    IT: "Italian",
+    NL: "Dutch",
+    PT: "Portuguese",
+    PL: "Polish",
+    RU: "Russian",
+    ZH: "Chinese (Simplified)",
+    JA: "Japanese",
+    AR: "Arabic",
+  };
+  const responseLang = langNames[uiLang.toUpperCase()] ?? "English";
   return `You are a senior SEO analyst. Analyze this website's SEO data and return a JSON report.
+⚠️ IMPORTANT: Write ALL text fields (titles, details, feedback, aiInsight, technicalSummary) in ${responseLang}. Only "language", "languageName", "languageNative" fields are fixed — those describe the website's language, not your response language.
 
 URL: ${url}
 HTML lang attribute: "${seoData.lang}"
@@ -155,7 +173,7 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { url } = body;
+    const { url, uiLang } = body;
 
     if (!url || typeof url !== "string") {
       return NextResponse.json(
@@ -222,7 +240,15 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: "deepseek-chat",
         messages: [
-          { role: "user", content: buildPrompt(url, seoData, fetchError) },
+          {
+            role: "user",
+            content: buildPrompt(
+              url,
+              seoData,
+              fetchError,
+              typeof uiLang === "string" ? uiLang : "EN",
+            ),
+          },
         ],
         temperature: 0.1,
         max_tokens: 2500,

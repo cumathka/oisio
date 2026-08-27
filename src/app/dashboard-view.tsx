@@ -692,9 +692,7 @@ function OverviewView({ ar }: { ar?: AnalysisResult | null }) {
                 <p className="text-sm text-white font-medium truncate">
                   {a.title}
                 </p>
-                <p className="text-[11px] text-white/35 mt-0.5">
-                  Effort: {a.effort} · {a.detail}
-                </p>
+                <p className="text-[11px] text-white/35 mt-0.5">{a.detail}</p>
               </div>
               <div className="shrink-0 text-right hidden sm:block">
                 <div className="text-xs font-bold text-emerald-400">
@@ -1417,11 +1415,13 @@ function Sidebar({
   onSelect,
   collapsed,
   onToggle,
+  onBack,
 }: {
   active: View;
   onSelect: (v: View) => void;
   collapsed: boolean;
   onToggle: () => void;
+  onBack?: () => void;
 }) {
   return (
     <aside
@@ -1432,63 +1432,92 @@ function Sidebar({
       <div
         className={`flex items-center gap-3 h-16 border-b border-white/[0.06] px-4 ${collapsed ? "justify-center" : ""}`}
       >
-        <div className="relative shrink-0 w-7 h-7">
-          <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-indigo-500 via-violet-500 to-emerald-400" />
-          <div className="absolute inset-[1.5px] rounded-[7px] bg-[#050810] flex items-center justify-center">
-            <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-3 group"
+          title="Ana sayfaya dön"
+        >
+          {/* Logo mark */}
+          <div className="relative shrink-0 w-8 h-8">
+            {/* outer ring */}
+            <div className="absolute inset-0 rounded-[10px] bg-gradient-to-br from-indigo-500 via-violet-600 to-emerald-400" />
+            <div className="absolute inset-[1.5px] rounded-[8px] bg-[#050810]" />
+            {/* inner SVG */}
+            <svg
+              className="absolute inset-0 m-auto"
+              width="18"
+              height="18"
+              viewBox="0 0 22 22"
+              fill="none"
+            >
+              {/* Diamond top */}
               <path
-                d="M10 1L2 5.5L10 10L18 5.5Z"
-                stroke="url(#sl1)"
-                strokeWidth="1.6"
+                d="M11 2L4 6.5V11"
+                stroke="#818cf8"
+                strokeWidth="1.7"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
               <path
-                d="M2 14.5L10 19L18 14.5"
-                stroke="url(#sl1)"
-                strokeWidth="1.6"
+                d="M11 2L18 6.5V11"
+                stroke="#818cf8"
+                strokeWidth="1.7"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
+              {/* Diamond mid */}
               <path
-                d="M2 10L10 14.5L18 10"
-                stroke="url(#sl2)"
-                strokeWidth="1.6"
+                d="M4 11L11 15.5L18 11"
+                stroke="url(#lg_mid)"
+                strokeWidth="1.7"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
+              {/* Diamond bottom */}
+              <path
+                d="M4 15.5L11 20L18 15.5"
+                stroke="#34d399"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Center dot */}
+              <circle cx="11" cy="11" r="1.5" fill="url(#lg_dot)" />
               <defs>
                 <linearGradient
-                  id="sl1"
-                  x1="2"
-                  y1="1"
+                  id="lg_mid"
+                  x1="4"
+                  y1="11"
                   x2="18"
-                  y2="19"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor="#818cf8" />
-                  <stop offset="1" stopColor="#34d399" />
-                </linearGradient>
-                <linearGradient
-                  id="sl2"
-                  x1="2"
-                  y1="10"
-                  x2="18"
-                  y2="10"
+                  y2="15"
                   gradientUnits="userSpaceOnUse"
                 >
                   <stop stopColor="#a78bfa" />
                   <stop offset="1" stopColor="#6ee7b7" />
                 </linearGradient>
+                <linearGradient
+                  id="lg_dot"
+                  x1="9.5"
+                  y1="9.5"
+                  x2="12.5"
+                  y2="12.5"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stopColor="#6366f1" />
+                  <stop offset="1" stopColor="#34d399" />
+                </linearGradient>
               </defs>
             </svg>
           </div>
-        </div>
-        {!collapsed && (
-          <span className="font-black text-base tracking-tight">
-            <span className="text-white">oiSio</span>
-            <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
-              .ai
+          {!collapsed && (
+            <span className="font-black text-base tracking-tight group-hover:opacity-80 transition-opacity">
+              <span className="text-white">oiSio</span>
+              <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+                .ai
+              </span>
             </span>
-          </span>
-        )}
+          )}
+        </button>
       </div>
 
       {/* nav items */}
@@ -1578,9 +1607,11 @@ function AnalysisLoadingOverlay() {
 export function DashboardPageContent({
   analysisResult,
   analysisLoading,
+  onBack,
 }: {
   analysisResult?: AnalysisResult | null;
   analysisLoading?: boolean;
+  onBack?: () => void;
 }) {
   const [active, setActive] = useState<View>("overview");
   const [collapsed, setCollapsed] = useState(false);
@@ -1621,6 +1652,7 @@ export function DashboardPageContent({
         onSelect={setActive}
         collapsed={collapsed}
         onToggle={() => setCollapsed((c) => !c)}
+        onBack={onBack}
       />
 
       {/* Main */}
@@ -1685,13 +1717,22 @@ export function DashboardPageContent({
               style={{ background: "#050810" }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mb-4 px-2 pt-2">
-                <span className="font-black text-lg">
-                  <span className="text-white">oiSio</span>
-                  <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
-                    .ai
+              <div className="mb-4 px-2 pt-2 flex items-center justify-between">
+                <button
+                  onClick={onBack}
+                  className="flex items-center gap-2 group"
+                >
+                  <span className="font-black text-lg">
+                    <span className="text-white">oiSio</span>
+                    <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">.ai</span>
                   </span>
-                </span>
+                </button>
+                <button
+                  onClick={onBack}
+                  className="text-[10px] font-bold text-white/30 hover:text-white/70 px-2 py-1 rounded-lg hover:bg-white/[0.06] transition-all"
+                >
+                  ← Ana sayfa
+                </button>
               </div>
               {NAV_ITEMS.map((item) => (
                 <button
