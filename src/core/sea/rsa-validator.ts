@@ -2,14 +2,22 @@ import { RSACheckResult, RSAPolicyViolation } from "@/types";
 
 export function validateRsaAsset(
   text: string,
-  type: 'HEADLINE' | 'DESCRIPTION'
-): { characterCount: number; maxAllowed: number; valid: boolean; policyWarnings: string[] } {
-  const maxAllowed = type === 'HEADLINE' ? MAX_HEADLINE_LENGTH : MAX_DESCRIPTION_LENGTH;
+  type: "HEADLINE" | "DESCRIPTION",
+): {
+  characterCount: number;
+  maxAllowed: number;
+  valid: boolean;
+  policyWarnings: string[];
+} {
+  const maxAllowed =
+    type === "HEADLINE" ? MAX_HEADLINE_LENGTH : MAX_DESCRIPTION_LENGTH;
   const characterCount = getUnicodeLength(text);
   const policyWarnings: string[] = [];
 
   if (characterCount > maxAllowed) {
-    policyWarnings.push(`Exceeds limit by ${characterCount - maxAllowed} characters`);
+    policyWarnings.push(
+      `Exceeds limit by ${characterCount - maxAllowed} characters`,
+    );
   }
 
   const lower = text.toLowerCase();
@@ -20,7 +28,7 @@ export function validateRsaAsset(
   }
 
   if (/!{2,}/.test(text)) {
-    policyWarnings.push('Excessive exclamation marks not permitted');
+    policyWarnings.push("Excessive exclamation marks not permitted");
   }
 
   return {

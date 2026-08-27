@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { HealthScoreHero, ChannelScore } from './HealthScoreHero';
-import { PriorityActionCards, PriorityAction } from './PriorityActionCards';
-import { ChannelMetricsGrid } from './ChannelMetricsGrid';
-import { AiGrowthBanner } from './AiGrowthBanner';
+import React from "react";
+import { HealthScoreHero, ChannelScore } from "./HealthScoreHero";
+import { PriorityActionCards, PriorityAction } from "./PriorityActionCards";
+import { ChannelMetricsGrid } from "./ChannelMetricsGrid";
+import { AiGrowthBanner } from "./AiGrowthBanner";
 
 export interface DashboardViewProps {
   overallScore: number;
@@ -34,10 +34,10 @@ export function DashboardView({
         overallScore={overallScore}
         channels={channels}
         onExploreChannel={(ch) => {
-          if (ch.includes('SEO') || ch.includes('Technical')) onNavigate('seo');
-          else if (ch.includes('SEA') || ch.includes('Ads')) onNavigate('ads');
-          else if (ch.includes('CRO')) onNavigate('cro');
-          else onNavigate('seo');
+          if (ch.includes("SEO") || ch.includes("Technical")) onNavigate("seo");
+          else if (ch.includes("SEA") || ch.includes("Ads")) onNavigate("ads");
+          else if (ch.includes("CRO")) onNavigate("cro");
+          else onNavigate("seo");
         }}
       />
 
@@ -53,7 +53,9 @@ export function DashboardView({
 
       {/* 4. Compact 4-channel live metrics */}
       <div className="space-y-3">
-        <h3 className="text-sm font-bold text-slate-100">Performance Snapshot</h3>
+        <h3 className="text-sm font-bold text-slate-100">
+          Performance Snapshot
+        </h3>
         <ChannelMetricsGrid currency={currency} />
       </div>
     </div>

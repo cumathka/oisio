@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
+import React from "react";
+import { Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 
 export interface AiGrowthBannerProps {
   onAskCopilot?: (prompt: string) => void;
 }
 
 export function AiGrowthBanner({ onAskCopilot }: AiGrowthBannerProps) {
-  const suggestedPrompt = "Analyze the Swiss German search intent gap for our top 5 B2B keywords and generate 3 localized RSA headlines.";
+  const suggestedPrompt =
+    "Analyze the Swiss German search intent gap for our top 5 B2B keywords and generate 3 localized RSA headlines.";
 
   return (
     <Card variant="ai" padding="md" className="relative overflow-hidden">
@@ -25,10 +26,21 @@ export function AiGrowthBanner({ onAskCopilot }: AiGrowthBannerProps) {
               <h3 className="text-sm font-bold text-slate-100">
                 Proactive Opportunity Detected (Swiss DACH Market)
               </h3>
-              <Badge variant="ai" size="sm">Evidence Grounded</Badge>
+              <Badge variant="ai" size="sm">
+                Evidence Grounded
+              </Badge>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
-              Swiss users searching for <span className="font-mono text-indigo-300">"Marketing Automatisierung Schweiz"</span> show a <span className="text-emerald-400 font-semibold">+42% higher conversion rate</span> on German landing pages with explicit CHF pricing than generic Euro SaaS pages.
+              Swiss users searching for{" "}
+              <span className="font-mono text-indigo-300">
+                "Marketing Automatisierung Schweiz"
+              </span>{" "}
+              show a{" "}
+              <span className="text-emerald-400 font-semibold">
+                +42% higher conversion rate
+              </span>{" "}
+              on German landing pages with explicit CHF pricing than generic
+              Euro SaaS pages.
             </p>
             <div className="flex items-center gap-3 text-[11px] text-slate-400 pt-0.5">
               <span className="flex items-center gap-1 font-mono">

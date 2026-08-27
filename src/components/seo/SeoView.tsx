@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { TechnicalAuditView } from './TechnicalAuditView';
-import { KeywordIntelligenceTable } from './KeywordIntelligenceTable';
-import { ContentOpportunityBoard } from './ContentOpportunityBoard';
-import { SeoEvidenceDrawer, SeoIssueEvidence } from './SeoEvidenceDrawer';
-import { Tabs } from '@/components/ui/Tabs';
-import { SearchCheck, Key, BookOpen, BarChart3 } from 'lucide-react';
+import React, { useState } from "react";
+import { TechnicalAuditView } from "./TechnicalAuditView";
+import { KeywordIntelligenceTable } from "./KeywordIntelligenceTable";
+import { ContentOpportunityBoard } from "./ContentOpportunityBoard";
+import { SeoEvidenceDrawer, SeoIssueEvidence } from "./SeoEvidenceDrawer";
+import { Tabs } from "@/components/ui/Tabs";
+import { SearchCheck, Key, BookOpen, BarChart3 } from "lucide-react";
 
 export interface SeoViewProps {
   currency: string;
@@ -21,8 +21,11 @@ export function SeoView({
   isAuditing,
   onAskCopilot,
 }: SeoViewProps) {
-  const [activeSubTab, setActiveSubTab] = useState<'technical' | 'keywords' | 'content'>('technical');
-  const [selectedEvidenceIssue, setSelectedEvidenceIssue] = useState<SeoIssueEvidence | null>(null);
+  const [activeSubTab, setActiveSubTab] = useState<
+    "technical" | "keywords" | "content"
+  >("technical");
+  const [selectedEvidenceIssue, setSelectedEvidenceIssue] =
+    useState<SeoIssueEvidence | null>(null);
 
   return (
     <div className="space-y-6">
@@ -30,9 +33,21 @@ export function SeoView({
       <div className="flex items-center justify-between border-b border-slate-800 pb-3">
         <Tabs
           items={[
-            { id: 'technical', label: 'Technical SEO Audit', icon: <SearchCheck className="w-3.5 h-3.5" /> },
-            { id: 'keywords', label: 'Keyword Intelligence', icon: <Key className="w-3.5 h-3.5" /> },
-            { id: 'content', label: 'Content Pipeline & Funnel', icon: <BookOpen className="w-3.5 h-3.5" /> },
+            {
+              id: "technical",
+              label: "Technical SEO Audit",
+              icon: <SearchCheck className="w-3.5 h-3.5" />,
+            },
+            {
+              id: "keywords",
+              label: "Keyword Intelligence",
+              icon: <Key className="w-3.5 h-3.5" />,
+            },
+            {
+              id: "content",
+              label: "Content Pipeline & Funnel",
+              icon: <BookOpen className="w-3.5 h-3.5" />,
+            },
           ]}
           activeId={activeSubTab}
           onChange={(id) => setActiveSubTab(id as any)}
@@ -41,7 +56,7 @@ export function SeoView({
       </div>
 
       {/* View switching */}
-      {activeSubTab === 'technical' && (
+      {activeSubTab === "technical" && (
         <TechnicalAuditView
           onOpenEvidence={(issue) => setSelectedEvidenceIssue(issue)}
           onRunAudit={onRunAudit}
@@ -49,11 +64,11 @@ export function SeoView({
         />
       )}
 
-      {activeSubTab === 'keywords' && (
+      {activeSubTab === "keywords" && (
         <KeywordIntelligenceTable currency={currency} />
       )}
 
-      {activeSubTab === 'content' && (
+      {activeSubTab === "content" && (
         <ContentOpportunityBoard onAskCopilot={onAskCopilot} />
       )}
 
@@ -64,7 +79,9 @@ export function SeoView({
         onClose={() => setSelectedEvidenceIssue(null)}
         onApplyFix={(issue) => {
           if (onAskCopilot) {
-            onAskCopilot(`Fix this technical SEO issue: ${issue.title} on URL: ${issue.url}. Remediation code: ${issue.remediationCode}`);
+            onAskCopilot(
+              `Fix this technical SEO issue: ${issue.title} on URL: ${issue.url}. Remediation code: ${issue.remediationCode}`,
+            );
           }
         }}
       />

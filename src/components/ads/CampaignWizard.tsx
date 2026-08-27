@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
+import React, { useState } from "react";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
   Check,
   ChevronRight,
@@ -14,27 +14,32 @@ import {
   Layers,
   Sparkles,
   Rocket,
-} from 'lucide-react';
-import { RsaBuilderSplitView } from './RsaBuilderSplitView';
+} from "lucide-react";
+import { RsaBuilderSplitView } from "./RsaBuilderSplitView";
 
 export interface CampaignWizardProps {
   currency: string;
   onLaunchCampaign?: (data: any) => void;
 }
 
-export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignWizardProps) {
+export function CampaignWizard({
+  currency = "CHF",
+  onLaunchCampaign,
+}: CampaignWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [goal, setGoal] = useState<'LEADS' | 'SALES' | 'TRAFFIC'>('LEADS');
-  const [dailyBudget, setDailyBudget] = useState('50');
-  const [biddingStrategy, setBiddingStrategy] = useState('MAX_CONVERSIONS');
-  const [targetLocation, setTargetLocation] = useState('Switzerland (CH) + DACH');
+  const [goal, setGoal] = useState<"LEADS" | "SALES" | "TRAFFIC">("LEADS");
+  const [dailyBudget, setDailyBudget] = useState("50");
+  const [biddingStrategy, setBiddingStrategy] = useState("MAX_CONVERSIONS");
+  const [targetLocation, setTargetLocation] = useState(
+    "Switzerland (CH) + DACH",
+  );
 
   const steps = [
-    { number: 1, title: 'Goal & Objective', icon: Target },
-    { number: 2, title: 'Network & Location', icon: Globe2 },
-    { number: 3, title: 'Budget & Bidding', icon: DollarSign },
-    { number: 4, title: 'Responsive Search Ads', icon: Layers },
-    { number: 5, title: 'Review & Push to Google', icon: Rocket },
+    { number: 1, title: "Goal & Objective", icon: Target },
+    { number: 2, title: "Network & Location", icon: Globe2 },
+    { number: 3, title: "Budget & Bidding", icon: DollarSign },
+    { number: 4, title: "Responsive Search Ads", icon: Layers },
+    { number: 5, title: "Review & Push to Google", icon: Rocket },
   ];
 
   const handleNext = () => {
@@ -61,19 +66,19 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
                   onClick={() => setCurrentStep(step.number)}
                   className={`flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     isCurrent
-                      ? 'bg-indigo-600 text-white shadow-sm'
+                      ? "bg-indigo-600 text-white shadow-sm"
                       : isDone
-                      ? 'text-emerald-400 hover:bg-slate-800'
-                      : 'text-slate-500 hover:text-slate-300'
+                        ? "text-emerald-400 hover:bg-slate-800"
+                        : "text-slate-500 hover:text-slate-300"
                   }`}
                 >
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold ${
                       isCurrent
-                        ? 'bg-white text-indigo-700'
+                        ? "bg-white text-indigo-700"
                         : isDone
-                        ? 'bg-emerald-500/20 text-emerald-400'
-                        : 'bg-slate-800 text-slate-400'
+                          ? "bg-emerald-500/20 text-emerald-400"
+                          : "bg-slate-800 text-slate-400"
                     }`}
                   >
                     {isDone ? <Check className="w-3 h-3" /> : step.number}
@@ -93,31 +98,51 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
       <div className="min-h-[380px]">
         {currentStep === 1 && (
           <Card variant="surface" padding="lg" className="space-y-4">
-            <h3 className="text-base font-bold text-slate-100">Step 1: Campaign Objective</h3>
+            <h3 className="text-base font-bold text-slate-100">
+              Step 1: Campaign Objective
+            </h3>
             <p className="text-xs text-slate-400">
               Select the primary business outcome for this campaign.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
               {[
-                { id: 'LEADS', label: 'B2B Leads & Demos', desc: 'Maximize form submissions and demo requests with qualified B2B intent.' },
-                { id: 'SALES', label: 'Online Sales / MRR', desc: 'Direct self-serve SaaS subscriptions with automated tracking.' },
-                { id: 'TRAFFIC', label: 'Qualified Website Visits', desc: 'Drive high-volume organic searchers into mid-funnel content.' },
+                {
+                  id: "LEADS",
+                  label: "B2B Leads & Demos",
+                  desc: "Maximize form submissions and demo requests with qualified B2B intent.",
+                },
+                {
+                  id: "SALES",
+                  label: "Online Sales / MRR",
+                  desc: "Direct self-serve SaaS subscriptions with automated tracking.",
+                },
+                {
+                  id: "TRAFFIC",
+                  label: "Qualified Website Visits",
+                  desc: "Drive high-volume organic searchers into mid-funnel content.",
+                },
               ].map((item) => (
                 <div
                   key={item.id}
                   onClick={() => setGoal(item.id as any)}
                   className={`p-4 rounded-xl border cursor-pointer transition-all ${
                     goal === item.id
-                      ? 'bg-indigo-950/40 border-indigo-500 shadow-md shadow-indigo-950/50'
-                      : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+                      ? "bg-indigo-950/40 border-indigo-500 shadow-md shadow-indigo-950/50"
+                      : "bg-slate-950/60 border-slate-800 hover:border-slate-700"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-slate-200">{item.label}</h4>
-                    {goal === item.id && <Check className="w-4 h-4 text-indigo-400" />}
+                    <h4 className="text-sm font-semibold text-slate-200">
+                      {item.label}
+                    </h4>
+                    {goal === item.id && (
+                      <Check className="w-4 h-4 text-indigo-400" />
+                    )}
                   </div>
-                  <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
               ))}
             </div>
@@ -126,9 +151,12 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
 
         {currentStep === 2 && (
           <Card variant="surface" padding="lg" className="space-y-4">
-            <h3 className="text-base font-bold text-slate-100">Step 2: Geographic & Language Targeting</h3>
+            <h3 className="text-base font-bold text-slate-100">
+              Step 2: Geographic & Language Targeting
+            </h3>
             <p className="text-xs text-slate-400">
-              Target local regional markets with high Swiss Franc purchasing power.
+              Target local regional markets with high Swiss Franc purchasing
+              power.
             </p>
 
             <div className="space-y-3 pt-2">
@@ -145,9 +173,14 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
               </div>
 
               <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400 space-y-1">
-                <div className="font-semibold text-slate-200">Recommended Geo-Modifiers:</div>
+                <div className="font-semibold text-slate-200">
+                  Recommended Geo-Modifiers:
+                </div>
                 <div>• Zurich (Kanton ZH), Geneva, Basel-Stadt, Bern</div>
-                <div>• Exclude non-relevant IP regions via automated SSRF/Fraud Shield</div>
+                <div>
+                  • Exclude non-relevant IP regions via automated SSRF/Fraud
+                  Shield
+                </div>
               </div>
             </div>
           </Card>
@@ -155,7 +188,9 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
 
         {currentStep === 3 && (
           <Card variant="surface" padding="lg" className="space-y-4">
-            <h3 className="text-base font-bold text-slate-100">Step 3: Budget & Smart Bidding</h3>
+            <h3 className="text-base font-bold text-slate-100">
+              Step 3: Budget & Smart Bidding
+            </h3>
             <p className="text-xs text-slate-400">
               Set your target daily spend and automated bidding algorithm.
             </p>
@@ -167,7 +202,11 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 font-mono">
-                    {currency === 'CHF' ? 'Fr.' : currency === 'EUR' ? '€' : '$'}
+                    {currency === "CHF"
+                      ? "Fr."
+                      : currency === "EUR"
+                        ? "€"
+                        : "$"}
                   </span>
                   <input
                     type="number"
@@ -177,7 +216,8 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
                   />
                 </div>
                 <span className="text-[10px] text-slate-500 mt-1 block">
-                  Est. Monthly Spend: ~{currency} {(Number(dailyBudget) * 30.4).toFixed(0)}
+                  Est. Monthly Spend: ~{currency}{" "}
+                  {(Number(dailyBudget) * 30.4).toFixed(0)}
                 </span>
               </div>
 
@@ -190,8 +230,12 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
                   onChange={(e) => setBiddingStrategy(e.target.value)}
                   className="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 >
-                  <option value="MAX_CONVERSIONS">Maximize Conversions (Target CPA)</option>
-                  <option value="MAX_CONV_VALUE">Maximize Conversion Value (Target ROAS)</option>
+                  <option value="MAX_CONVERSIONS">
+                    Maximize Conversions (Target CPA)
+                  </option>
+                  <option value="MAX_CONV_VALUE">
+                    Maximize Conversion Value (Target ROAS)
+                  </option>
                   <option value="MAX_CLICKS">Maximize Clicks</option>
                 </select>
               </div>
@@ -201,7 +245,9 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
 
         {currentStep === 4 && (
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-slate-100">Step 4: Responsive Search Ad Composition</h3>
+            <h3 className="text-base font-bold text-slate-100">
+              Step 4: Responsive Search Ad Composition
+            </h3>
             <RsaBuilderSplitView />
           </div>
         )}
@@ -210,12 +256,16 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
           <Card variant="surface" padding="lg" className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-100">Step 5: Pre-Flight Audit & Deployment</h3>
+                <h3 className="text-base font-bold text-slate-100">
+                  Step 5: Pre-Flight Audit & Deployment
+                </h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Verify campaign parameters against Google Ads API v16 schemas.
                 </p>
               </div>
-              <Badge variant="success" size="md">Ready for API Sync</Badge>
+              <Badge variant="success" size="md">
+                Ready for API Sync
+              </Badge>
             </div>
 
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
@@ -225,15 +275,21 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
               </div>
               <div className="flex justify-between border-b border-slate-800/80 pb-2">
                 <span className="text-slate-400">Target Location</span>
-                <span className="font-mono text-slate-200">{targetLocation}</span>
+                <span className="font-mono text-slate-200">
+                  {targetLocation}
+                </span>
               </div>
               <div className="flex justify-between border-b border-slate-800/80 pb-2">
                 <span className="text-slate-400">Daily Spend</span>
-                <span className="font-mono font-bold text-emerald-400">{currency} {dailyBudget}/day</span>
+                <span className="font-mono font-bold text-emerald-400">
+                  {currency} {dailyBudget}/day
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">RSA Ad Strength</span>
-                <span className="font-semibold text-indigo-400">EXCELLENT (100% Policy Clean)</span>
+                <span className="font-semibold text-indigo-400">
+                  EXCELLENT (100% Policy Clean)
+                </span>
               </div>
             </div>
           </Card>
@@ -265,7 +321,10 @@ export function CampaignWizard({ currency = 'CHF', onLaunchCampaign }: CampaignW
           <Button
             variant="ai"
             size="md"
-            onClick={() => onLaunchCampaign && onLaunchCampaign({ goal, dailyBudget, targetLocation })}
+            onClick={() =>
+              onLaunchCampaign &&
+              onLaunchCampaign({ goal, dailyBudget, targetLocation })
+            }
             icon={<Rocket className="w-4 h-4 text-white" />}
           >
             Publish Campaign to Google Ads

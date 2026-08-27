@@ -1,16 +1,23 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { Search, ArrowUpDown, Sparkles, TrendingUp } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/Table";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { ProgressBar } from "@/components/ui/ProgressBar";
+import { Search, ArrowUpDown, Sparkles, TrendingUp } from "lucide-react";
 
 export interface KeywordItem {
   id: string;
   keyword: string;
-  intent: 'Transactional' | 'Commercial' | 'Informational' | 'Navigational';
+  intent: "Transactional" | "Commercial" | "Informational" | "Navigational";
   volume: number;
   difficulty: number; // 0 - 100
   cpc: number;
@@ -18,15 +25,19 @@ export interface KeywordItem {
   change: number;
 }
 
-export function KeywordIntelligenceTable({ currency = 'CHF' }: { currency?: string }) {
-  const [search, setSearch] = useState('');
-  const [intentFilter, setIntentFilter] = useState('ALL');
+export function KeywordIntelligenceTable({
+  currency = "CHF",
+}: {
+  currency?: string;
+}) {
+  const [search, setSearch] = useState("");
+  const [intentFilter, setIntentFilter] = useState("ALL");
 
   const keywords: KeywordItem[] = [
     {
-      id: 'kw-1',
-      keyword: 'marketing automatisierung schweiz',
-      intent: 'Commercial',
+      id: "kw-1",
+      keyword: "marketing automatisierung schweiz",
+      intent: "Commercial",
       volume: 3800,
       difficulty: 42,
       cpc: 4.85,
@@ -34,19 +45,19 @@ export function KeywordIntelligenceTable({ currency = 'CHF' }: { currency?: stri
       change: +2,
     },
     {
-      id: 'kw-2',
-      keyword: 'seo agentur zürich kmu',
-      intent: 'Transactional',
+      id: "kw-2",
+      keyword: "seo agentur zürich kmu",
+      intent: "Transactional",
       volume: 2100,
       difficulty: 68,
-      cpc: 7.20,
+      cpc: 7.2,
       position: 5,
       change: 0,
     },
     {
-      id: 'kw-3',
-      keyword: 'google ads rsa optimierung tipps',
-      intent: 'Informational',
+      id: "kw-3",
+      keyword: "google ads rsa optimierung tipps",
+      intent: "Informational",
       volume: 5400,
       difficulty: 28,
       cpc: 1.95,
@@ -54,42 +65,58 @@ export function KeywordIntelligenceTable({ currency = 'CHF' }: { currency?: stri
       change: +4,
     },
     {
-      id: 'kw-4',
-      keyword: 'b2b marketing software chf',
-      intent: 'Transactional',
+      id: "kw-4",
+      keyword: "b2b marketing software chf",
+      intent: "Transactional",
       volume: 1650,
       difficulty: 54,
-      cpc: 6.10,
+      cpc: 6.1,
       position: 8,
       change: -1,
     },
     {
-      id: 'kw-5',
-      keyword: 'landing page conversion optimieren',
-      intent: 'Informational',
+      id: "kw-5",
+      keyword: "landing page conversion optimieren",
+      intent: "Informational",
       volume: 4200,
       difficulty: 38,
-      cpc: 3.40,
+      cpc: 3.4,
       position: 4,
       change: +1,
     },
   ];
 
-  const getIntentBadge = (intent: KeywordItem['intent']) => {
+  const getIntentBadge = (intent: KeywordItem["intent"]) => {
     switch (intent) {
-      case 'Transactional':
-        return <Badge variant="success" size="sm">Transactional</Badge>;
-      case 'Commercial':
-        return <Badge variant="info" size="sm">Commercial</Badge>;
-      case 'Informational':
-        return <Badge variant="purple" size="sm">Informational</Badge>;
-      case 'Navigational':
-        return <Badge variant="neutral" size="sm">Navigational</Badge>;
+      case "Transactional":
+        return (
+          <Badge variant="success" size="sm">
+            Transactional
+          </Badge>
+        );
+      case "Commercial":
+        return (
+          <Badge variant="info" size="sm">
+            Commercial
+          </Badge>
+        );
+      case "Informational":
+        return (
+          <Badge variant="purple" size="sm">
+            Informational
+          </Badge>
+        );
+      case "Navigational":
+        return (
+          <Badge variant="neutral" size="sm">
+            Navigational
+          </Badge>
+        );
     }
   };
 
   const filtered = keywords
-    .filter((k) => (intentFilter === 'ALL' ? true : k.intent === intentFilter))
+    .filter((k) => (intentFilter === "ALL" ? true : k.intent === intentFilter))
     .filter((k) => k.keyword.toLowerCase().includes(search.toLowerCase()));
 
   return (
@@ -98,7 +125,9 @@ export function KeywordIntelligenceTable({ currency = 'CHF' }: { currency?: stri
         <div>
           <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
             <span>Keyword Intelligence & Search Intent</span>
-            <Badge variant="ai" size="sm">High Commercial Value</Badge>
+            <Badge variant="ai" size="sm">
+              High Commercial Value
+            </Badge>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
             Real search volumes from Swiss & DACH Google search engines.
@@ -138,19 +167,27 @@ export function KeywordIntelligenceTable({ currency = 'CHF' }: { currency?: stri
                 {kw.keyword}
               </TableCell>
               <TableCell>{getIntentBadge(kw.intent)}</TableCell>
-              <TableCell className="font-mono">{kw.volume.toLocaleString()}</TableCell>
+              <TableCell className="font-mono">
+                {kw.volume.toLocaleString()}
+              </TableCell>
               <TableCell className="w-40">
                 <div className="flex items-center gap-2 font-mono text-[11px]">
                   <span>{kw.difficulty}%</span>
                   <ProgressBar
                     value={kw.difficulty}
                     size="xs"
-                    variant={kw.difficulty > 60 ? 'rose' : kw.difficulty > 35 ? 'amber' : 'emerald'}
+                    variant={
+                      kw.difficulty > 60
+                        ? "rose"
+                        : kw.difficulty > 35
+                          ? "amber"
+                          : "emerald"
+                    }
                   />
                 </div>
               </TableCell>
               <TableCell className="font-mono">
-                {currency === 'CHF' ? 'Fr. ' : currency === 'EUR' ? '€' : '$'}
+                {currency === "CHF" ? "Fr. " : currency === "EUR" ? "€" : "$"}
                 {kw.cpc.toFixed(2)}
               </TableCell>
               <TableCell className="font-mono font-bold">
@@ -158,7 +195,7 @@ export function KeywordIntelligenceTable({ currency = 'CHF' }: { currency?: stri
                 {kw.change !== 0 && (
                   <span
                     className={`ml-1.5 text-[10px] ${
-                      kw.change > 0 ? 'text-emerald-400' : 'text-rose-400'
+                      kw.change > 0 ? "text-emerald-400" : "text-rose-400"
                     }`}
                   >
                     {kw.change > 0 ? `+${kw.change}` : kw.change}

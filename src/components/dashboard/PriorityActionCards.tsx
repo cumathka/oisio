@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -9,14 +9,14 @@ import {
   Clock,
   CheckCircle2,
   ExternalLink,
-} from 'lucide-react';
-import { Card, CardHeader } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
+} from "lucide-react";
+import { Card, CardHeader } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 
 export interface PriorityAction {
   id: string;
-  category: 'DO_FIRST' | 'PLAN' | 'OPTIONAL';
+  category: "DO_FIRST" | "PLAN" | "OPTIONAL";
   title: string;
   what: string;
   why: string;
@@ -24,7 +24,7 @@ export interface PriorityAction {
   actionText: string;
   source: string;
   confidence: number;
-  effort: 'Low (15m)' | 'Medium (2h)' | 'High (2d)';
+  effort: "Low (15m)" | "Medium (2h)" | "High (2d)";
 }
 
 export interface PriorityActionCardsProps {
@@ -38,14 +38,30 @@ export function PriorityActionCards({
   onExecuteAction,
   onOpenEvidence,
 }: PriorityActionCardsProps) {
-  const getCategoryBadge = (cat: PriorityAction['category']) => {
+  const getCategoryBadge = (cat: PriorityAction["category"]) => {
     switch (cat) {
-      case 'DO_FIRST':
-        return <Badge variant="danger" size="md" icon={<Zap className="w-3 h-3" />}>DO FIRST (Urgent)</Badge>;
-      case 'PLAN':
-        return <Badge variant="info" size="md" icon={<Clock className="w-3 h-3" />}>PLAN (Strategic)</Badge>;
-      case 'OPTIONAL':
-        return <Badge variant="warning" size="md" icon={<CheckCircle2 className="w-3 h-3" />}>OPTIONAL (Incremental)</Badge>;
+      case "DO_FIRST":
+        return (
+          <Badge variant="danger" size="md" icon={<Zap className="w-3 h-3" />}>
+            DO FIRST (Urgent)
+          </Badge>
+        );
+      case "PLAN":
+        return (
+          <Badge variant="info" size="md" icon={<Clock className="w-3 h-3" />}>
+            PLAN (Strategic)
+          </Badge>
+        );
+      case "OPTIONAL":
+        return (
+          <Badge
+            variant="warning"
+            size="md"
+            icon={<CheckCircle2 className="w-3 h-3" />}
+          >
+            OPTIONAL (Incremental)
+          </Badge>
+        );
     }
   };
 
@@ -55,10 +71,13 @@ export function PriorityActionCards({
         <div>
           <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
             <span>Prioritized Growth Actions</span>
-            <Badge variant="ai" size="sm">Decision Engine V2</Badge>
+            <Badge variant="ai" size="sm">
+              Decision Engine V2
+            </Badge>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            Ranked deterministically by Impact $\times$ Confidence $\div$ Effort. Grounded in actual crawl logs & Ads telemetry.
+            Ranked deterministically by Impact $\times$ Confidence $\div$
+            Effort. Grounded in actual crawl logs & Ads telemetry.
           </p>
         </div>
       </div>
@@ -74,7 +93,9 @@ export function PriorityActionCards({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 {getCategoryBadge(act.category)}
-                <span className="text-[10px] font-mono text-slate-400">{act.effort}</span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  {act.effort}
+                </span>
               </div>
 
               <h4 className="text-sm font-semibold text-slate-200 line-clamp-2">
@@ -118,7 +139,7 @@ export function PriorityActionCards({
 
               <Button
                 size="sm"
-                variant={act.category === 'DO_FIRST' ? 'primary' : 'secondary'}
+                variant={act.category === "DO_FIRST" ? "primary" : "secondary"}
                 onClick={() => onExecuteAction(act)}
                 icon={<Sparkles className="w-3 h-3 text-indigo-300" />}
               >
@@ -134,8 +155,18 @@ export function PriorityActionCards({
 
 function TrendingUpIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+    <svg
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"
+      />
     </svg>
   );
 }

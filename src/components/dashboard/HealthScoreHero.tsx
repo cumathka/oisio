@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ShieldCheck, ArrowUpRight, Sparkles, TrendingUp } from 'lucide-react';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import React from "react";
+import { ShieldCheck, ArrowUpRight, Sparkles, TrendingUp } from "lucide-react";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 
 export interface ChannelScore {
   name: string;
   score: number;
   weight: string;
-  status: 'good' | 'warning' | 'danger';
+  status: "good" | "warning" | "danger";
 }
 
 export interface HealthScoreHeroProps {
@@ -29,7 +29,10 @@ export function HealthScoreHero({
   const diff = overallScore - previousScore;
 
   return (
-    <Card variant="surface" className="relative overflow-hidden border-indigo-900/40">
+    <Card
+      variant="surface"
+      className="relative overflow-hidden border-indigo-900/40"
+    >
       {/* Background ambient gradient */}
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-indigo-600/10 blur-3xl pointer-events-none" />
 
@@ -50,16 +53,31 @@ export function HealthScoreHero({
 
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold text-slate-100">Overall Marketing Health</h2>
-              <Badge variant="success" size="sm" icon={<TrendingUp className="w-3 h-3" />}>
+              <h2 className="text-lg font-bold text-slate-100">
+                Overall Marketing Health
+              </h2>
+              <Badge
+                variant="success"
+                size="sm"
+                icon={<TrendingUp className="w-3 h-3" />}
+              >
                 +{diff}% vs last month
               </Badge>
             </div>
             <p className="text-xs text-slate-400 max-w-md leading-relaxed">
-              Based on <span className="text-slate-200 font-medium">108 deterministic checkpoints</span> across Technical SEO, Google Ads RSA compliance, Landing Page friction, and Content depth.
+              Based on{" "}
+              <span className="text-slate-200 font-medium">
+                108 deterministic checkpoints
+              </span>{" "}
+              across Technical SEO, Google Ads RSA compliance, Landing Page
+              friction, and Content depth.
             </p>
             <div className="flex items-center gap-2 pt-1">
-              <Badge variant="ai" size="sm" icon={<Sparkles className="w-3 h-3" />}>
+              <Badge
+                variant="ai"
+                size="sm"
+                icon={<Sparkles className="w-3 h-3" />}
+              >
                 Deterministic Scoring Engine Active
               </Badge>
             </div>
@@ -76,12 +94,16 @@ export function HealthScoreHero({
             >
               <div className="flex items-center justify-between text-xs mb-1.5">
                 <span className="font-medium text-slate-300">{ch.name}</span>
-                <span className="font-mono font-bold text-slate-200">{ch.score}%</span>
+                <span className="font-mono font-bold text-slate-200">
+                  {ch.score}%
+                </span>
               </div>
               <ProgressBar
                 value={ch.score}
                 size="xs"
-                variant={ch.score >= 80 ? 'emerald' : ch.score >= 60 ? 'amber' : 'rose'}
+                variant={
+                  ch.score >= 80 ? "emerald" : ch.score >= 60 ? "amber" : "rose"
+                }
               />
               <div className="flex justify-between items-center text-[10px] text-slate-500 mt-1 font-mono">
                 <span>Weight: {ch.weight}</span>

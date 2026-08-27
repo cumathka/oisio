@@ -1,15 +1,22 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Drawer } from '@/components/ui/Drawer';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { Code, CheckCircle, Copy, AlertTriangle, ShieldCheck, Sparkles } from 'lucide-react';
+import React from "react";
+import { Drawer } from "@/components/ui/Drawer";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import {
+  Code,
+  CheckCircle,
+  Copy,
+  AlertTriangle,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
 export interface SeoIssueEvidence {
   id: string;
   title: string;
-  severity: 'CRITICAL' | 'WARNING' | 'INFO';
+  severity: "CRITICAL" | "WARNING" | "INFO";
   url: string;
   category: string;
   description: string;
@@ -59,11 +66,11 @@ export function SeoEvidenceDrawer({
           <span>{issue.title}</span>
           <Badge
             variant={
-              issue.severity === 'CRITICAL'
-                ? 'danger'
-                : issue.severity === 'WARNING'
-                ? 'warning'
-                : 'info'
+              issue.severity === "CRITICAL"
+                ? "danger"
+                : issue.severity === "WARNING"
+                  ? "warning"
+                  : "info"
             }
             size="sm"
           >
@@ -102,8 +109,12 @@ export function SeoEvidenceDrawer({
       <div className="space-y-6">
         {/* Issue Description & Impact */}
         <div className="p-3.5 rounded-lg bg-slate-950/60 border border-slate-800 space-y-2">
-          <div className="text-xs font-semibold text-slate-200">Issue Diagnostic</div>
-          <p className="text-xs text-slate-400 leading-relaxed">{issue.description}</p>
+          <div className="text-xs font-semibold text-slate-200">
+            Issue Diagnostic
+          </div>
+          <p className="text-xs text-slate-400 leading-relaxed">
+            {issue.description}
+          </p>
           {issue.impactScore && (
             <div className="text-[11px] text-emerald-400 font-medium">
               Estimated Score Recovery: +{issue.impactScore}
@@ -120,30 +131,40 @@ export function SeoEvidenceDrawer({
             {issue.evidence.httpStatus && (
               <div className="p-3 flex justify-between">
                 <span className="text-slate-500 font-mono">HTTP Status</span>
-                <span className="font-mono text-slate-200">{issue.evidence.httpStatus} OK</span>
+                <span className="font-mono text-slate-200">
+                  {issue.evidence.httpStatus} OK
+                </span>
               </div>
             )}
             {issue.evidence.domSelector && (
               <div className="p-3 flex justify-between">
                 <span className="text-slate-500 font-mono">DOM Selector</span>
-                <span className="font-mono text-indigo-300">{issue.evidence.domSelector}</span>
+                <span className="font-mono text-indigo-300">
+                  {issue.evidence.domSelector}
+                </span>
               </div>
             )}
             {issue.evidence.detectedValue && (
               <div className="p-3 flex justify-between">
                 <span className="text-slate-500 font-mono">Detected Value</span>
-                <span className="font-mono text-rose-400 font-medium">{issue.evidence.detectedValue}</span>
+                <span className="font-mono text-rose-400 font-medium">
+                  {issue.evidence.detectedValue}
+                </span>
               </div>
             )}
             {issue.evidence.expectedValue && (
               <div className="p-3 flex justify-between">
                 <span className="text-slate-500 font-mono">Expected Value</span>
-                <span className="font-mono text-emerald-400 font-medium">{issue.evidence.expectedValue}</span>
+                <span className="font-mono text-emerald-400 font-medium">
+                  {issue.evidence.expectedValue}
+                </span>
               </div>
             )}
             <div className="p-3 flex justify-between">
               <span className="text-slate-500 font-mono">Crawled At</span>
-              <span className="font-mono text-slate-400">{issue.evidence.crawledAt || '2025-05-18 14:32:10 UTC'}</span>
+              <span className="font-mono text-slate-400">
+                {issue.evidence.crawledAt || "2025-05-18 14:32:10 UTC"}
+              </span>
             </div>
           </div>
         </div>
@@ -171,8 +192,12 @@ export function SeoEvidenceDrawer({
                 onClick={handleCopy}
                 className="text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 font-mono transition-colors"
               >
-                {copied ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? 'Copied!' : 'Copy snippet'}
+                {copied ? (
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
+                {copied ? "Copied!" : "Copy snippet"}
               </button>
             </div>
             <div className="p-3 rounded-lg bg-slate-950 font-mono text-xs text-emerald-300 border border-emerald-950/80 overflow-x-auto whitespace-pre">

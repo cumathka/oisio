@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Bot,
   Send,
@@ -11,13 +11,13 @@ import {
   CornerDownLeft,
   User,
   CheckCircle,
-} from 'lucide-react';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
+} from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 
 export interface CopilotMessage {
   id: string;
-  sender: 'user' | 'assistant';
+  sender: "user" | "assistant";
   text: string;
   timestamp: string;
   groundedSources?: string[];
@@ -40,15 +40,18 @@ export function MarketingCopilotDrawer({
 }: MarketingCopilotDrawerProps) {
   const [messages, setMessages] = useState<CopilotMessage[]>([
     {
-      id: 'm-1',
-      sender: 'assistant',
-      text: 'Grüezi! I am your oiSio Marketing Copilot. I have analyzed your 108 SEO checkpoints, Google Ads campaigns, and Swiss conversion metrics. How can I assist your growth strategy today?',
-      timestamp: 'Just now',
-      groundedSources: ['oiSio Deterministic Engine', 'Swiss Google Search Console Cache'],
+      id: "m-1",
+      sender: "assistant",
+      text: "Grüezi! I am your oiSio Marketing Copilot. I have analyzed your 108 SEO checkpoints, Google Ads campaigns, and Swiss conversion metrics. How can I assist your growth strategy today?",
+      timestamp: "Just now",
+      groundedSources: [
+        "oiSio Deterministic Engine",
+        "Swiss Google Search Console Cache",
+      ],
     },
   ]);
 
-  const [inputPrompt, setInputPrompt] = useState(initialPrompt || '');
+  const [inputPrompt, setInputPrompt] = useState(initialPrompt || "");
   const [isTyping, setIsTyping] = useState(false);
 
   React.useEffect(() => {
@@ -60,10 +63,10 @@ export function MarketingCopilotDrawer({
   if (!isOpen) return null;
 
   const quickChips = [
-    'Why did my SEO score drop?',
-    'Write 3 Swiss German RSA headlines',
-    'Explain canonical tag issue',
-    'Calculate CAC for 50 CHF budget',
+    "Why did my SEO score drop?",
+    "Write 3 Swiss German RSA headlines",
+    "Explain canonical tag issue",
+    "Calculate CAC for 50 CHF budget",
   ];
 
   const handleSend = async (textToSend?: string) => {
@@ -72,25 +75,25 @@ export function MarketingCopilotDrawer({
 
     const userMsg: CopilotMessage = {
       id: `u-${Date.now()}`,
-      sender: 'user',
+      sender: "user",
       text,
-      timestamp: 'Now',
+      timestamp: "Now",
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    setInputPrompt('');
+    setInputPrompt("");
     setIsTyping(true);
 
     try {
-      const res = await fetch('/api/v1/copilot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/v1/copilot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt: text,
           context: {
-            workspace: 'Swiss SaaS Demo',
+            workspace: "Swiss SaaS Demo",
             currentScore: 74,
-            currency: 'CHF',
+            currency: "CHF",
           },
         }),
       });
@@ -99,20 +102,22 @@ export function MarketingCopilotDrawer({
 
       const assistantMsg: CopilotMessage = {
         id: `a-${Date.now()}`,
-        sender: 'assistant',
-        text: data.response || `Here is the evidence-grounded recommendation for "${text}":\n\n1. Ensure canonical tags resolve to the primary Swiss franc URL.\n2. Keep RSA headlines strictly under 30 characters for zero policy rejections.\n3. Implement localized Swiss German keywords to lift CTR by +42%.`,
-        timestamp: 'Just now',
-        groundedSources: ['GSC Crawler Logs', 'Google Ads RSA Policy v16'],
+        sender: "assistant",
+        text:
+          data.response ||
+          `Here is the evidence-grounded recommendation for "${text}":\n\n1. Ensure canonical tags resolve to the primary Swiss franc URL.\n2. Keep RSA headlines strictly under 30 characters for zero policy rejections.\n3. Implement localized Swiss German keywords to lift CTR by +42%.`,
+        timestamp: "Just now",
+        groundedSources: ["GSC Crawler Logs", "Google Ads RSA Policy v16"],
       };
 
       setMessages((prev) => [...prev, assistantMsg]);
     } catch {
       const assistantMsg: CopilotMessage = {
         id: `a-${Date.now()}`,
-        sender: 'assistant',
+        sender: "assistant",
         text: `Analysis complete for: "${text}".\n\nPriority recommendation: Focus on high-intent transactional search terms in the Zurich and Geneva cantons with clear CHF pricing on your landing page.`,
-        timestamp: 'Just now',
-        groundedSources: ['Local Deterministic Model'],
+        timestamp: "Just now",
+        groundedSources: ["Local Deterministic Model"],
       };
       setMessages((prev) => [...prev, assistantMsg]);
     } finally {
@@ -135,7 +140,9 @@ export function MarketingCopilotDrawer({
                 Live
               </span>
             </h3>
-            <p className="text-[10px] text-slate-400">Grounded in actual workspace telemetry</p>
+            <p className="text-[10px] text-slate-400">
+              Grounded in actual workspace telemetry
+            </p>
           </div>
         </div>
 
@@ -152,9 +159,9 @@ export function MarketingCopilotDrawer({
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex gap-2.5 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
           >
-            {msg.sender === 'assistant' && (
+            {msg.sender === "assistant" && (
               <div className="w-6 h-6 rounded-md bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Bot className="w-3.5 h-3.5 text-indigo-300" />
               </div>
@@ -162,9 +169,9 @@ export function MarketingCopilotDrawer({
 
             <div
               className={`max-w-[85%] rounded-xl p-3 text-xs leading-relaxed space-y-2 ${
-                msg.sender === 'user'
-                  ? 'bg-indigo-600 text-white rounded-tr-none'
-                  : 'bg-slate-950 border border-slate-800 text-slate-200 rounded-tl-none'
+                msg.sender === "user"
+                  ? "bg-indigo-600 text-white rounded-tr-none"
+                  : "bg-slate-950 border border-slate-800 text-slate-200 rounded-tl-none"
               }`}
             >
               <div className="whitespace-pre-line">{msg.text}</div>
@@ -189,7 +196,7 @@ export function MarketingCopilotDrawer({
               )}
             </div>
 
-            {msg.sender === 'user' && (
+            {msg.sender === "user" && (
               <div className="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <User className="w-3.5 h-3.5 text-slate-300" />
               </div>
